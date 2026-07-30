@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Desain Rumah Mewah - Mini Game Edukasi Seni dan Budaya</title>
+  <title>Desain Unsur 2 Dimensi - Seni dan Budaya Kelas 5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Tone.js Audio Engine untuk Efek Suara Berkualitas tanpa File External -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
@@ -19,8 +22,8 @@
     .bg-grid-pattern {
       background-size: 20px 20px;
       background-image: 
-        linear-gradient(to right, rgba(200, 200, 255, 0.2) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(200, 200, 255, 0.2) 1px, transparent 1px);
+        linear-gradient(to right, rgba(200, 200, 255, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(200, 200, 255, 0.25) 1px, transparent 1px);
     }
 
     .custom-scrollbar::-webkit-scrollbar {
@@ -45,6 +48,7 @@
       cursor: move;
       touch-action: none;
       transition: outline 0.1s ease;
+      transform-origin: center center;
     }
 
     .canvas-item.selected {
@@ -64,7 +68,7 @@
 </head>
 <body class="bg-slate-900 text-slate-800 h-screen w-screen overflow-hidden flex flex-col font-sans select-none">
 
-  <!-- ================= SCREEN 1: SPLASH SCREEN (Sesuai Gambar 1) ================= -->
+  <!-- ================= SCREEN 1: SPLASH SCREEN ================= -->
   <div id="screen-splash" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4">
     <div class="relative w-full max-w-2xl bg-gradient-to-b from-blue-900 to-indigo-950 rounded-2xl p-8 border border-blue-700/50 shadow-2xl text-center overflow-hidden">
       
@@ -76,33 +80,20 @@
         <div class="w-24 h-24 rounded-full border-4 border-amber-400 overflow-hidden mb-4 shadow-lg bg-emerald-600 flex items-center justify-center relative">
           <img src="lehan.png" alt="Pak Lehan" class="w-full h-full object-cover z-10 relative" onerror="this.style.display='none'; document.getElementById('avatar-svg-fallback').classList.remove('hidden');">
           
-          <!-- Fallback Vektor Pak Lehan (Sesuai Foto Asli) jika file lehan.jpg belum dimuat -->
+          <!-- Fallback Vektor Pak Lehan -->
           <div id="avatar-svg-fallback" class="w-full h-full hidden flex items-center justify-center">
             <svg viewBox="0 0 120 120" class="w-full h-full">
-              <!-- Latar Belakang Hijau Dinding -->
               <circle cx="60" cy="60" r="60" fill="#22c55e"/>
-              
-              <!-- Seragam Biru Muda Dinas -->
               <path d="M10,120 C10,92 35,80 60,80 C85,80 110,92 110,120 Z" fill="#a5f3fc"/>
               <path d="M46,80 L60,96 L74,80 Z" fill="#0284c7"/>
-              
-              <!-- Wajah Pak Lehan -->
               <circle cx="60" cy="52" r="26" fill="#f3d5b5"/>
-              
-              <!-- Rambut Rapi Pendek -->
               <path d="M34,48 C34,26 86,26 86,48 C86,34 34,34 34,48 Z" fill="#1e293b"/>
               <ellipse cx="60" cy="35" rx="24" ry="12" fill="#1e293b"/>
-              
-              <!-- Telinga -->
               <circle cx="33" cy="54" r="5" fill="#f3d5b5"/>
               <circle cx="87" cy="54" r="5" fill="#f3d5b5"/>
-              
-              <!-- Mata & Senyuman -->
               <circle cx="50" cy="50" r="2.5" fill="#0f172a"/>
               <circle cx="70" cy="50" r="2.5" fill="#0f172a"/>
               <path d="M52,61 Q60,68 68,61" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-              
-              <!-- Lencana & Pangkat Seragam Kuning Emas -->
               <rect x="22" y="90" width="14" height="6" rx="2" fill="#eab308"/>
               <rect x="84" y="90" width="14" height="6" rx="2" fill="#eab308"/>
               <circle cx="44" cy="90" r="3" fill="#f59e0b"/>
@@ -111,16 +102,16 @@
         </div>
 
         <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide uppercase mb-1">
-          DESAIN KARYA SENI BUDAYA
+          DESAIN UNSUR 2 DIMENSI
         </h1>
-        <h2 class="text-lg font-bold text-amber-400 mb-1">KELAS 5</h2>
+        <h2 class="text-lg font-bold text-amber-400 mb-1">SENI DAN BUDAYA KELAS 5</h2>
         <p class="text-sm font-semibold text-slate-300 mb-2">SD NEGERI 2 SENDANG AYU</p>
 
         <span class="inline-block bg-blue-800/80 text-blue-200 text-xs px-4 py-1.5 rounded-full mb-8 border border-blue-600/50">
           Pertemuan 1 : Unsur Seni Rupa Dua Dimensi.
         </span>
 
-        <!-- Tombol Mulai (Warna Oranye) -->
+        <!-- Tombol Mulai -->
         <button id="btn-start-game" onclick="goToDataScreen()" class="btn-pulse w-full max-w-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-3 px-6 rounded-full shadow-lg flex items-center justify-center gap-2 text-base transition-all transform active:scale-95">
           <span>MULAI BERMAIN</span>
           <i class="fa-solid fa-arrow-right"></i>
@@ -138,7 +129,7 @@
     </div>
   </div>
 
-  <!-- ================= SCREEN 2: MODAL DATA DIRI (Sesuai Gambar 2) ================= -->
+  <!-- ================= SCREEN 2: MODAL DATA DIRI ================= -->
   <div id="screen-data-diri" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl border border-slate-200 text-slate-800">
       <div class="text-center mb-6">
@@ -199,6 +190,11 @@
 
       <!-- Primary Action Buttons -->
       <div class="flex items-center gap-2 shrink-0">
+        <!-- Tombol Toggle Musik Latar -->
+        <button id="btn-bgm" onclick="toggleBGM()" title="Musik Latar (Backsound)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5">
+          <i id="bgm-icon" class="fa-solid fa-music text-amber-400"></i> <span id="bgm-text" class="hidden sm:inline">Musik: On</span>
+        </button>
+
         <button onclick="saveDesign()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5">
           <i class="fa-solid fa-floppy-disk text-emerald-400"></i> <span class="hidden sm:inline">Simpan</span>
         </button>
@@ -209,12 +205,12 @@
             <i class="fa-solid fa-download"></i> <span>Unduh Gambar</span> <i class="fa-solid fa-chevron-down text-[10px]"></i>
           </button>
           <div id="download-menu" class="hidden absolute right-0 mt-1 w-52 bg-white rounded-xl shadow-2xl border border-slate-200 py-1.5 z-50 text-slate-700">
-            <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Format Landscape</div>
+            <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Format Landscape (Presisi 1:1)</div>
             <button onclick="downloadFormat('png', 'landscape')" class="w-full text-left px-3 py-1.5 text-xs hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2 font-medium">
-              <i class="fa-regular fa-file-image text-blue-600"></i> PNG Landscape (Tinggi)
+              <i class="fa-regular fa-file-image text-blue-600"></i> PNG Landscape
             </button>
             <button onclick="downloadFormat('jpg', 'landscape')" class="w-full text-left px-3 py-1.5 text-xs hover:bg-amber-50 hover:text-amber-600 flex items-center gap-2 font-medium">
-              <i class="fa-regular fa-file-image text-amber-600"></i> JPG Landscape (Standar)
+              <i class="fa-regular fa-file-image text-amber-600"></i> JPG Landscape
             </button>
             <div class="border-t border-slate-100 my-1"></div>
             <div class="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Format Portrait</div>
@@ -230,12 +226,11 @@
       </div>
     </header>
 
-    <!-- Main Workspace Layout (Fits 1 Screen Responsive) -->
+    <!-- Main Workspace Layout -->
     <div class="flex-1 min-h-0 flex overflow-hidden relative w-full">
 
-      <!-- LEFT PANEL: Kategori & Palette Objek Drag (Dengan Scroll) -->
+      <!-- LEFT PANEL: Kategori & Palette Objek Drag -->
       <aside class="w-56 md:w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 z-20 shadow-lg h-full min-h-0 overflow-hidden">
-        <!-- Selector Kategori -->
         <div class="p-2.5 border-b border-slate-100 bg-slate-50 shrink-0">
           <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Kategori Objek</label>
           <select id="category-select" onchange="renderPalette()" class="w-full bg-white border border-slate-300 text-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -249,34 +244,31 @@
           </select>
         </div>
 
-        <!-- List Objek Drag (Grid Scrollable Internal) -->
         <div id="palette-list" class="flex-1 min-h-0 p-2.5 grid grid-cols-2 gap-2 overflow-y-auto custom-scrollbar">
-          <!-- Objek akan di-generate via JS -->
+          <!-- Objek di-generate via JS -->
         </div>
       </aside>
 
-      <!-- CENTER PANEL: Area Kanvas Auto Responsive Fit 1 Screen -->
+      <!-- CENTER PANEL: Area Kanvas (1200x800) -->
       <main id="canvas-center-panel" class="flex-1 min-w-0 min-h-0 h-full bg-slate-200 p-2 overflow-hidden flex items-center justify-center relative">
         
-        <!-- Canvas Wrapper (Skala Otomatis Menyesuaikan Layar) -->
         <div id="canvas-container" class="relative w-[1200px] h-[800px] bg-sky-100 rounded-2xl shadow-xl overflow-hidden border-2 border-slate-300 shrink-0 transition-transform origin-center">
           
-          <!-- Latar Belakang Alam Default (Rumput & Langit) -->
+          <!-- Latar Belakang Alam Default (Presisi 62% Langit, 38% Rumput) -->
           <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-emerald-600 to-green-500 border-t-4 border-emerald-700/30"></div>
           <div class="absolute inset-x-0 top-0 h-[62%] bg-gradient-to-b from-sky-300 via-sky-200 to-sky-100"></div>
 
-          <!-- Overlay Grid Tipis (Toggleable) -->
+          <!-- Grid Overlay -->
           <div id="canvas-grid" class="absolute inset-0 bg-grid-pattern opacity-0 pointer-events-none transition-opacity"></div>
 
-          <!-- Canvas Drop Area (Elemen yang di-drag ditaruh di sini) -->
+          <!-- Work Area tempat elemen ditaruh -->
           <div id="canvas-workspace" class="absolute inset-0" ondragover="allowDrop(event)" ondrop="handleDrop(event)" onclick="deselectAll(event)">
-            <!-- Interactive Dragged Items dynamically created -->
           </div>
         </div>
 
       </main>
 
-      <!-- RIGHT PANEL: Floating / Fixed Inspector Control Toolbar (1 Screen Responsive) -->
+      <!-- RIGHT PANEL: Inspector Controls -->
       <aside class="w-56 md:w-60 bg-white border-l border-slate-200 flex flex-col p-3 shrink-0 z-20 shadow-lg justify-between h-full min-h-0 overflow-y-auto custom-scrollbar">
         <div>
           <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pengaturan Objek</h3>
@@ -287,7 +279,6 @@
           </div>
 
           <div id="inspector-controls" class="space-y-3 hidden">
-            <!-- Label Objek Terpilih -->
             <div class="bg-blue-50 p-2 rounded-lg border border-blue-100 flex items-center justify-between">
               <span id="selected-label" class="text-xs font-bold text-blue-900 truncate">Objek</span>
               <span class="text-[10px] bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full font-semibold shrink-0">Aktif</span>
@@ -338,9 +329,8 @@
           </div>
         </div>
 
-        <!-- Watermark / Footer -->
         <div class="text-[10px] text-slate-400 text-center border-t border-slate-100 pt-2 mt-2">
-          IPAS Kelas 5 SD - Created By Pak LEHAN
+          Seni dan Budaya Kelas 5 SD - Created By Pak LEHAN
         </div>
       </aside>
 
@@ -351,7 +341,6 @@
   <div id="modal-score" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl border border-slate-200 text-slate-800 relative text-center">
       
-      <!-- Lencana / Badges -->
       <div id="reward-badge-icon" class="w-20 h-20 bg-amber-100 border-4 border-amber-400 text-amber-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-3 shadow-lg">
         🏆
       </div>
@@ -361,7 +350,6 @@
       </h3>
       <p class="text-xs text-slate-500 font-semibold mb-4">Hasil Penilaian Komposisi Karya Seni 2D</p>
 
-      <!-- Skor Ring -->
       <div class="bg-slate-50 rounded-xl p-4 mb-4 border border-slate-200 flex items-center justify-around">
         <div class="text-center">
           <span class="text-3xl font-black text-blue-600" id="final-score-val">95</span>
@@ -370,12 +358,10 @@
         <div class="h-10 w-px bg-slate-200"></div>
         <div class="text-left max-w-xs">
           <div id="score-breakdown" class="text-[11px] text-slate-600 space-y-1">
-            <!-- Breakdowns -->
           </div>
         </div>
       </div>
 
-      <!-- Feedback Komentar -->
       <div class="bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl p-3 text-xs mb-6 text-left">
         <p class="font-bold mb-1 flex items-center gap-1">
           <i class="fa-solid fa-comment-dots"></i> Catatan Guru / Evaluator:
@@ -383,7 +369,6 @@
         <p id="eval-feedback-text">Desainmu sangat rapi, seimbang, dan memanfaatkan ruang kanvas dengan baik!</p>
       </div>
 
-      <!-- Action Buttons -->
       <div class="grid grid-cols-3 gap-2">
         <button onclick="closeScoreModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs">
           Lanjut
@@ -398,170 +383,413 @@
     </div>
   </div>
 
-  <!-- Toast Notification System -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- JavaScript Logic -->
+  <!-- JavaScript Logic & Audio Engine -->
   <script>
-    /* ================= KATALOG ASET (SVG OBJECTS) ================= */
+    /* ================= KATALOG ASET TERKALIBRASI PRESISI (SVG + PIXEL SIZE) ================= */
     const ASSET_CATALOG = {
       bangunan: [
         {
+          id: 'b_rumah_jadi',
+          name: 'Rumah Sudah Jadi',
+          w: 200, h: 150,
+          svg: `<svg viewBox="0 0 200 150" class="w-full h-full"><polygon points="100,10 15,70 185,70" fill="#dc2626" stroke="#991b1b" stroke-width="3"/><rect x="30" y="70" width="140" height="70" fill="#f8fafc" stroke="#64748b" stroke-width="3"/><rect x="85" y="90" width="30" height="50" fill="#78350f" rx="2"/><circle cx="110" cy="115" r="2.5" fill="#facc15"/><rect x="45" y="85" width="28" height="28" fill="#38bdf8" stroke="#0284c7" stroke-width="2" rx="2"/><rect x="127" y="85" width="28" height="28" fill="#38bdf8" stroke="#0284c7" stroke-width="2" rx="2"/><rect x="88" y="30" width="24" height="40" fill="#b45309" stroke="#78350f" stroke-width="2"/></svg>`
+        },
+        {
           id: 'b_pondasi',
           name: 'Pondasi Rumah',
-          svg: `<svg viewBox="0 0 100 60" class="w-full h-full"><rect x="5" y="15" width="90" height="30" fill="#78350f" rx="3"/><rect x="5" y="45" width="90" height="10" fill="#451a03" rx="2"/></svg>`
+          w: 120, h: 60,
+          svg: `<svg viewBox="0 0 120 60" class="w-full h-full"><rect x="5" y="15" width="110" height="30" fill="#78350f" rx="3"/><rect x="5" y="45" width="110" height="10" fill="#451a03" rx="2"/></svg>`
         },
         {
           id: 'b_dinding_bata',
           name: 'Dinding Bata',
-          svg: `<svg viewBox="0 0 100 80" class="w-full h-full"><rect x="5" y="5" width="90" height="70" fill="#fb923c" stroke="#c2410c" stroke-width="2"/><line x1="5" y1="28" x2="95" y2="28" stroke="#c2410c" stroke-width="2"/><line x1="5" y1="52" x2="95" y2="52" stroke="#c2410c" stroke-width="2"/><line x1="30" y1="5" x2="30" y2="28" stroke="#c2410c" stroke-width="2"/><line x1="70" y1="5" x2="70" y2="28" stroke="#c2410c" stroke-width="2"/><line x1="50" y1="28" x2="50" y2="52" stroke="#c2410c" stroke-width="2"/><line x1="25" y1="52" x2="25" y2="75" stroke="#c2410c" stroke-width="2"/><line x1="75" y1="52" x2="75" y2="75" stroke="#c2410c" stroke-width="2"/></svg>`
+          w: 140, h: 100,
+          svg: `<svg viewBox="0 0 140 100" class="w-full h-full"><rect x="5" y="5" width="130" height="90" fill="#fb923c" stroke="#c2410c" stroke-width="2"/><line x1="5" y1="35" x2="135" y2="35" stroke="#c2410c" stroke-width="2"/><line x1="5" y1="65" x2="135" y2="65" stroke="#c2410c" stroke-width="2"/><line x1="45" y1="5" x2="45" y2="35" stroke="#c2410c" stroke-width="2"/><line x1="95" y1="5" x2="95" y2="35" stroke="#c2410c" stroke-width="2"/><line x1="70" y1="35" x2="70" y2="65" stroke="#c2410c" stroke-width="2"/><line x1="35" y1="65" x2="35" y2="95" stroke="#c2410c" stroke-width="2"/><line x1="105" y1="65" x2="105" y2="95" stroke="#c2410c" stroke-width="2"/></svg>`
         },
         {
           id: 'b_dinding_modern',
           name: 'Dinding Modern',
-          svg: `<svg viewBox="0 0 100 80" class="w-full h-full"><rect x="5" y="5" width="90" height="70" fill="#f8fafc" stroke="#94a3b8" stroke-width="3" rx="4"/><line x1="5" y1="10" x2="5" y2="75" stroke="#38bdf8" stroke-width="4"/></svg>`
+          w: 140, h: 100,
+          svg: `<svg viewBox="0 0 140 100" class="w-full h-full"><rect x="5" y="5" width="130" height="90" fill="#f8fafc" stroke="#94a3b8" stroke-width="3" rx="4"/><line x1="12" y1="5" x2="12" y2="95" stroke="#38bdf8" stroke-width="4"/></svg>`
         },
         {
           id: 'b_atap_segitiga',
           name: 'Atap Segitiga Merah',
-          svg: `<svg viewBox="0 0 100 60" class="w-full h-full"><polygon points="50,5 5,55 95,55" fill="#dc2626" stroke="#991b1b" stroke-width="3"/><polygon points="50,12 15,50 85,50" fill="#ef4444"/></svg>`
+          w: 150, h: 80,
+          svg: `<svg viewBox="0 0 150 80" class="w-full h-full"><polygon points="75,5 5,75 145,75" fill="#dc2626" stroke="#991b1b" stroke-width="3"/><polygon points="75,14 20,70 130,70" fill="#ef4444"/></svg>`
         },
         {
           id: 'b_atap_klasik',
           name: 'Atap Biru Klasik',
-          svg: `<svg viewBox="0 0 100 60" class="w-full h-full"><polygon points="50,5 0,55 100,55" fill="#2563eb" stroke="#1e40af" stroke-width="3"/><path d="M 10 55 Q 50 15 90 55" fill="#3b82f6"/></svg>`
+          w: 150, h: 80,
+          svg: `<svg viewBox="0 0 150 80" class="w-full h-full"><polygon points="75,5 5,75 145,75" fill="#2563eb" stroke="#1e40af" stroke-width="3"/><path d="M 15 75 Q 75 20 135 75" fill="#3b82f6"/></svg>`
         },
         {
           id: 'b_atap_datar',
           name: 'Atap Datar Modern',
-          svg: `<svg viewBox="0 0 100 40" class="w-full h-full"><rect x="5" y="10" width="90" height="20" fill="#334155" rx="3"/><rect x="2" y="5" width="96" height="8" fill="#475569" rx="2"/></svg>`
+          w: 150, h: 45,
+          svg: `<svg viewBox="0 0 150 45" class="w-full h-full"><rect x="5" y="12" width="140" height="25" fill="#334155" rx="3"/><rect x="2" y="5" width="146" height="10" fill="#475569" rx="2"/></svg>`
         },
         {
           id: 'b_cerobong',
           name: 'Cerobong Asap',
-          svg: `<svg viewBox="0 0 50 70" class="w-full h-full"><rect x="12" y="15" width="26" height="50" fill="#b45309" stroke="#78350f" stroke-width="2"/><rect x="8" y="8" width="34" height="10" fill="#92400e" rx="2"/><circle cx="20" cy="5" r="3" fill="#cbd5e1" opacity="0.6"/><circle cx="28" cy="2" r="4" fill="#94a3b8" opacity="0.4"/></svg>`
+          w: 45, h: 70,
+          svg: `<svg viewBox="0 0 45 70" class="w-full h-full"><rect x="10" y="15" width="25" height="50" fill="#b45309" stroke="#78350f" stroke-width="2"/><rect x="6" y="8" width="33" height="10" fill="#92400e" rx="2"/><circle cx="18" cy="5" r="3" fill="#cbd5e1" opacity="0.6"/><circle cx="26" cy="2" r="4" fill="#94a3b8" opacity="0.4"/></svg>`
         }
       ],
       pintu: [
         {
           id: 'p_klasik',
           name: 'Pintu Kayu Klasik',
+          w: 60, h: 90,
           svg: `<svg viewBox="0 0 60 90" class="w-full h-full"><rect x="5" y="5" width="50" height="80" fill="#854d0e" stroke="#713f12" stroke-width="3" rx="3"/><rect x="12" y="12" width="15" height="30" fill="#a16207" rx="2"/><rect x="33" y="12" width="15" height="30" fill="#a16207" rx="2"/><rect x="12" y="48" width="15" height="30" fill="#a16207" rx="2"/><rect x="33" y="48" width="15" height="30" fill="#a16207" rx="2"/><circle cx="43" cy="45" r="3" fill="#facc15"/></svg>`
         },
         {
           id: 'p_modern',
           name: 'Pintu Modern Glass',
+          w: 60, h: 90,
           svg: `<svg viewBox="0 0 60 90" class="w-full h-full"><rect x="5" y="5" width="50" height="80" fill="#0f172a" stroke="#334155" stroke-width="3" rx="4"/><rect x="12" y="12" width="36" height="66" fill="#38bdf8" opacity="0.7" rx="2"/><line x1="45" y1="35" x2="45" y2="55" stroke="#f8fafc" stroke-width="3" stroke-linecap="round"/></svg>`
         },
         {
           id: 'p_ganda',
           name: 'Pintu Ganda Mewah',
+          w: 90, h: 90,
           svg: `<svg viewBox="0 0 90 90" class="w-full h-full"><rect x="5" y="5" width="80" height="80" fill="#451a03" stroke="#78350f" stroke-width="3" rx="3"/><line x1="45" y1="5" x2="45" y2="85" stroke="#78350f" stroke-width="2"/><circle cx="39" cy="45" r="3" fill="#f59e0b"/><circle cx="51" cy="45" r="3" fill="#f59e0b"/><rect x="12" y="15" width="25" height="28" fill="#78350f" rx="2"/><rect x="53" y="15" width="25" height="28" fill="#78350f" rx="2"/></svg>`
         },
         {
           id: 'p_balkon',
           name: 'Balkon Atas',
-          svg: `<svg viewBox="0 0 100 50" class="w-full h-full"><rect x="5" y="25" width="90" height="20" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/><line x1="10" y1="5" x2="90" y2="5" stroke="#475569" stroke-width="4"/><line x1="15" y1="5" x2="15" y2="25" stroke="#475569" stroke-width="2"/><line x1="30" y1="5" x2="30" y2="25" stroke="#475569" stroke-width="2"/><line x1="45" y1="5" x2="45" y2="25" stroke="#475569" stroke-width="2"/><line x1="60" y1="5" x2="60" y2="25" stroke="#475569" stroke-width="2"/><line x1="75" y1="5" x2="75" y2="25" stroke="#475569" stroke-width="2"/><line x1="85" y1="5" x2="85" y2="25" stroke="#475569" stroke-width="2"/></svg>`
+          w: 110, h: 50,
+          svg: `<svg viewBox="0 0 110 50" class="w-full h-full"><rect x="5" y="25" width="100" height="20" fill="#cbd5e1" stroke="#64748b" stroke-width="2"/><line x1="10" y1="5" x2="100" y2="5" stroke="#475569" stroke-width="4"/><line x1="15" y1="5" x2="15" y2="25" stroke="#475569" stroke-width="2"/><line x1="35" y1="5" x2="35" y2="25" stroke="#475569" stroke-width="2"/><line x1="55" y1="5" x2="55" y2="25" stroke="#475569" stroke-width="2"/><line x1="75" y1="5" x2="75" y2="25" stroke="#475569" stroke-width="2"/><line x1="95" y1="5" x2="95" y2="25" stroke="#475569" stroke-width="2"/></svg>`
         }
       ],
       jendela: [
         {
           id: 'j_kotak',
-          name: 'Jendela Kotak Minimalis',
+          name: 'Jendela Kotak',
+          w: 60, h: 60,
           svg: `<svg viewBox="0 0 60 60" class="w-full h-full"><rect x="5" y="5" width="50" height="50" fill="#bae6fd" stroke="#0284c7" stroke-width="4" rx="3"/><line x1="30" y1="5" x2="30" y2="55" stroke="#0284c7" stroke-width="2"/><line x1="5" y1="30" x2="55" y2="30" stroke="#0284c7" stroke-width="2"/></svg>`
         },
         {
           id: 'j_lengkung',
           name: 'Jendela Lengkung',
+          w: 60, h: 70,
           svg: `<svg viewBox="0 0 60 70" class="w-full h-full"><path d="M 5 30 A 25 25 0 0 1 55 30 L 55 65 L 5 65 Z" fill="#7dd3fc" stroke="#0369a1" stroke-width="4"/><line x1="30" y1="5" x2="30" y2="65" stroke="#0369a1" stroke-width="2"/><line x1="5" y1="35" x2="55" y2="35" stroke="#0369a1" stroke-width="2"/></svg>`
         },
         {
           id: 'j_besar',
           name: 'Jendela Besar Full',
+          w: 90, h: 60,
           svg: `<svg viewBox="0 0 90 60" class="w-full h-full"><rect x="5" y="5" width="80" height="50" fill="#e0f2fe" stroke="#334155" stroke-width="4" rx="2"/><line x1="31" y1="5" x2="31" y2="55" stroke="#334155" stroke-width="2"/><line x1="58" y1="5" x2="58" y2="55" stroke="#334155" stroke-width="2"/></svg>`
         }
       ],
       garasi: [
         {
+          id: 'g_kapal',
+          name: 'Kapal Laut',
+          w: 130, h: 70,
+          svg: `<svg viewBox="0 0 130 70" class="w-full h-full"><path d="M 15 40 L 30 62 L 100 62 L 115 40 Z" fill="#0284c7" stroke="#0369a1" stroke-width="2"/><rect x="35" y="22" width="50" height="18" fill="#f8fafc" rx="2"/><rect x="45" y="10" width="25" height="12" fill="#e2e8f0" rx="1"/><rect x="58" y="4" width="8" height="8" fill="#ef4444"/><circle cx="48" cy="31" r="3" fill="#0284c7"/><circle cx="60" cy="31" r="3" fill="#0284c7"/><circle cx="72" cy="31" r="3" fill="#0284c7"/><path d="M 5 62 Q 32 55 65 62 Q 98 68 125 62" stroke="#38bdf8" stroke-width="3" fill="none"/></svg>`
+        },
+        {
           id: 'g_pintu',
-          name: 'Pintu Garasi Besi',
-          svg: `<svg viewBox="0 0 100 80" class="w-full h-full"><rect x="5" y="5" width="90" height="70" fill="#94a3b8" stroke="#475569" stroke-width="3" rx="2"/><line x1="5" y1="20" x2="95" y2="20" stroke="#475569" stroke-width="2"/><line x1="5" y1="35" x2="95" y2="35" stroke="#475569" stroke-width="2"/><line x1="5" y1="50" x2="95" y2="50" stroke="#475569" stroke-width="2"/><line x1="5" y1="65" x2="95" y2="65" stroke="#475569" stroke-width="2"/></svg>`
+          name: 'Pintu Garasi',
+          w: 110, h: 80,
+          svg: `<svg viewBox="0 0 110 80" class="w-full h-full"><rect x="5" y="5" width="100" height="70" fill="#94a3b8" stroke="#475569" stroke-width="3" rx="2"/><line x1="5" y1="20" x2="105" y2="20" stroke="#475569" stroke-width="2"/><line x1="5" y1="35" x2="105" y2="35" stroke="#475569" stroke-width="2"/><line x1="5" y1="50" x2="105" y2="50" stroke="#475569" stroke-width="2"/><line x1="5" y1="65" x2="105" y2="65" stroke="#475569" stroke-width="2"/></svg>`
         },
         {
           id: 'g_sedan',
           name: 'Mobil Sedan Merah',
-          svg: `<svg viewBox="0 0 110 50" class="w-full h-full"><path d="M 10 30 L 25 15 L 70 15 L 85 30 L 100 30 C 105 30 105 40 100 40 L 10 40 C 5 40 5 30 10 30 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/><polygon points="30,17 48,17 48,28 25,28" fill="#93c5fd"/><polygon points="52,17 68,17 73,28 52,28" fill="#93c5fd"/><circle cx="28" cy="40" r="9" fill="#1e293b"/><circle cx="28" cy="40" r="4" fill="#94a3b8"/><circle cx="80" cy="40" r="9" fill="#1e293b"/><circle cx="80" cy="40" r="4" fill="#94a3b8"/></svg>`
+          w: 120, h: 55,
+          svg: `<svg viewBox="0 0 120 55" class="w-full h-full"><path d="M 10 32 L 28 16 L 78 16 L 95 32 L 110 32 C 115 32 115 44 110 44 L 10 44 C 5 44 5 32 10 32 Z" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/><polygon points="32,18 52,18 52,30 27,30" fill="#93c5fd"/><polygon points="56,18 74,18 80,30 56,30" fill="#93c5fd"/><circle cx="30" cy="44" r="10" fill="#1e293b"/><circle cx="30" cy="44" r="5" fill="#94a3b8"/><circle cx="88" cy="44" r="10" fill="#1e293b"/><circle cx="88" cy="44" r="5" fill="#94a3b8"/></svg>`
         },
         {
           id: 'g_suv',
           name: 'Mobil SUV Biru',
-          svg: `<svg viewBox="0 0 110 55" class="w-full h-full"><path d="M 8 32 L 18 12 L 80 12 L 95 32 L 102 32 C 106 32 106 44 102 44 L 8 44 C 4 44 4 32 8 32 Z" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/><rect x="22" y="15" width="28" height="14" fill="#bfdbfe" rx="1"/><rect x="54" y="15" width="28" height="14" fill="#bfdbfe" rx="1"/><circle cx="28" cy="44" r="10" fill="#0f172a"/><circle cx="28" cy="44" r="5" fill="#cbd5e1"/><circle cx="82" cy="44" r="10" fill="#0f172a"/><circle cx="82" cy="44" r="5" fill="#cbd5e1"/></svg>`
+          w: 120, h: 60,
+          svg: `<svg viewBox="0 0 120 60" class="w-full h-full"><path d="M 8 35 L 18 14 L 88 14 L 104 35 L 112 35 C 116 35 116 48 112 48 L 8 48 C 4 48 4 35 8 35 Z" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/><rect x="24" y="17" width="30" height="15" fill="#bfdbfe" rx="1"/><rect x="58" y="17" width="30" height="15" fill="#bfdbfe" rx="1"/><circle cx="30" cy="48" r="10" fill="#0f172a"/><circle cx="30" cy="48" r="5" fill="#cbd5e1"/><circle cx="90" cy="48" r="10" fill="#0f172a"/><circle cx="90" cy="48" r="5" fill="#cbd5e1"/></svg>`
         }
       ],
       alam: [
         {
+          id: 'a_batu',
+          name: 'Batu Taman',
+          w: 75, h: 45,
+          svg: `<svg viewBox="0 0 75 45" class="w-full h-full"><path d="M 10 38 Q 8 20 25 10 Q 50 8 68 22 Q 72 38 45 42 Z" fill="#64748b" stroke="#334155" stroke-width="2"/><path d="M 18 22 Q 32 14 52 16" stroke="#94a3b8" stroke-width="2" fill="none"/><ellipse cx="25" cy="38" rx="8" ry="4" fill="#475569"/></svg>`
+        },
+        {
+          id: 'a_gunung',
+          name: 'Gunung Indah',
+          w: 220, h: 110,
+          svg: `<svg viewBox="0 0 220 110" class="w-full h-full"><polygon points="110,10 10,105 210,105" fill="#15803d" stroke="#166534" stroke-width="2"/><polygon points="110,10 80,45 95,40 110,52 125,40 140,45" fill="#f8fafc"/><polygon points="55,35 5,105 105,105" fill="#166534" opacity="0.85"/></svg>`
+        },
+        {
           id: 'a_pohon',
           name: 'Pohon Rindang',
-          svg: `<svg viewBox="0 0 80 100" class="w-full h-full"><rect x="33" y="55" width="14" height="40" fill="#78350f" rx="2"/><circle cx="40" cy="35" r="30" fill="#16a34a"/><circle cx="25" cy="45" r="22" fill="#15803d"/><circle cx="55" cy="45" r="22" fill="#15803d"/><circle cx="40" cy="22" r="22" fill="#22c55e"/></svg>`
+          w: 90, h: 110,
+          svg: `<svg viewBox="0 0 90 110" class="w-full h-full"><rect x="38" y="60" width="14" height="45" fill="#78350f" rx="2"/><circle cx="45" cy="40" r="32" fill="#16a34a"/><circle cx="28" cy="50" r="24" fill="#15803d"/><circle cx="62" cy="50" r="24" fill="#15803d"/><circle cx="45" cy="25" r="24" fill="#22c55e"/></svg>`
         },
         {
           id: 'a_cemara',
           name: 'Pohon Cemara',
-          svg: `<svg viewBox="0 0 70 100" class="w-full h-full"><rect x="29" y="70" width="12" height="25" fill="#78350f" rx="2"/><polygon points="35,5 10,40 60,40" fill="#15803d"/><polygon points="35,25 12,55 58,55" fill="#16a34a"/><polygon points="35,40 8,72 62,72" fill="#22c55e"/></svg>`
+          w: 80, h: 110,
+          svg: `<svg viewBox="0 0 80 110" class="w-full h-full"><rect x="34" y="78" width="12" height="28" fill="#78350f" rx="2"/><polygon points="40,5 12,45 68,45" fill="#15803d"/><polygon points="40,28 14,60 66,60" fill="#16a34a"/><polygon points="40,45 10,80 70,80" fill="#22c55e"/></svg>`
         },
         {
           id: 'a_bunga',
           name: 'Taman Bunga',
-          svg: `<svg viewBox="0 0 80 50" class="w-full h-full"><path d="M 5 45 Q 40 35 75 45" stroke="#15803d" stroke-width="4" fill="none"/><circle cx="20" cy="25" r="8" fill="#ec4899"/><circle cx="20" cy="25" r="3" fill="#fde047"/><circle cx="40" cy="20" r="9" fill="#a855f7"/><circle cx="40" cy="20" r="3.5" fill="#fde047"/><circle cx="60" cy="26" r="8" fill="#f97316"/><circle cx="60" cy="26" r="3" fill="#fde047"/></svg>`
+          w: 90, h: 55,
+          svg: `<svg viewBox="0 0 90 55" class="w-full h-full"><path d="M 5 50 Q 45 40 85 50" stroke="#15803d" stroke-width="4" fill="none"/><circle cx="22" cy="28" r="9" fill="#ec4899"/><circle cx="22" cy="28" r="3.5" fill="#fde047"/><circle cx="45" cy="22" r="10" fill="#a855f7"/><circle cx="45" cy="22" r="4" fill="#fde047"/><circle cx="68" cy="29" r="9" fill="#f97316"/><circle cx="68" cy="29" r="3.5" fill="#fde047"/></svg>`
         },
         {
           id: 'a_semak',
           name: 'Semak Hijau',
-          svg: `<svg viewBox="0 0 90 40" class="w-full h-full"><path d="M 5 35 C 5 20 20 10 35 20 C 45 10 65 10 70 22 C 80 15 90 25 85 35 Z" fill="#22c55e" stroke="#15803d" stroke-width="2"/></svg>`
+          w: 100, h: 45,
+          svg: `<svg viewBox="0 0 100 45" class="w-full h-full"><path d="M 5 40 C 5 22 22 12 38 22 C 50 12 72 12 78 25 C 88 18 98 28 93 40 Z" fill="#22c55e" stroke="#15803d" stroke-width="2"/></svg>`
         }
       ],
       dekorasi: [
         {
+          id: 'd_pagar_putih',
+          name: 'Pagar Putih Klasik',
+          w: 110, h: 55,
+          svg: `<svg viewBox="0 0 110 55" class="w-full h-full"><rect x="5" y="18" width="100" height="6" fill="#cbd5e1"/><rect x="5" y="36" width="100" height="6" fill="#cbd5e1"/><polygon points="15,6 10,14 10,50 20,50 20,14" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/><polygon points="40,6 35,14 35,50 45,50 45,14" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/><polygon points="65,6 60,14 60,50 70,50 70,14" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/><polygon points="90,6 85,14 85,50 95,50 95,14" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/></svg>`
+        },
+        {
+          id: 'd_jalan',
+          name: 'Jalan Setapak',
+          w: 140, h: 50,
+          svg: `<svg viewBox="0 0 140 50" class="w-full h-full"><path d="M 5 5 L 135 5 L 135 45 L 5 45 Z" fill="#475569" stroke="#334155" stroke-width="2"/><line x1="15" y1="25" x2="35" y2="25" stroke="#fef08a" stroke-width="3" stroke-dasharray="2"/><line x1="55" y1="25" x2="75" y2="25" stroke="#fef08a" stroke-width="3"/><line x1="95" y1="25" x2="115" y2="25" stroke="#fef08a" stroke-width="3"/></svg>`
+        },
+        {
+          id: 'd_kursi',
+          name: 'Kursi Taman',
+          w: 80, h: 55,
+          svg: `<svg viewBox="0 0 80 55" class="w-full h-full"><rect x="10" y="28" width="60" height="8" fill="#b45309" rx="2"/><rect x="10" y="10" width="60" height="15" fill="#b45309" rx="2"/><line x1="15" y1="36" x2="15" y2="52" stroke="#451a03" stroke-width="4"/><line x1="65" y1="36" x2="65" y2="52" stroke="#451a03" stroke-width="4"/><line x1="10" y1="10" x2="10" y2="52" stroke="#451a03" stroke-width="3"/><line x1="70" y1="10" x2="70" y2="52" stroke="#451a03" stroke-width="3"/></svg>`
+        },
+        {
           id: 'd_pagar_kayu',
           name: 'Pagar Kayu',
-          svg: `<svg viewBox="0 0 100 50" class="w-full h-full"><rect x="5" y="15" width="90" height="6" fill="#a16207"/><rect x="5" y="32" width="90" height="6" fill="#a16207"/><polygon points="15,5 10,12 10,45 20,45 20,12" fill="#ca8a04" stroke="#854d0e" stroke-width="1"/><polygon points="40,5 35,12 35,45 45,45 45,12" fill="#ca8a04" stroke="#854d0e" stroke-width="1"/><polygon points="65,5 60,12 60,45 70,45 70,12" fill="#ca8a04" stroke="#854d0e" stroke-width="1"/><polygon points="90,5 85,12 85,45 95,45 95,12" fill="#ca8a04" stroke="#854d0e" stroke-width="1"/></svg>`
+          w: 110, h: 55,
+          svg: `<svg viewBox="0 0 110 55" class="w-full h-full"><rect x="5" y="16" width="100" height="7" fill="#a16207"/><rect x="5" y="35" width="100" height="7" fill="#a16207"/><polygon points="18,5 12,13 12,50 24,50 24,13" fill="#ca8a04" stroke="#854d0e" stroke-width="1"/><polygon points="46,5 40,13 40,50 52,50 52,13" fill="#ca8a04" stroke="#854d0e" stroke-width="1"/><polygon points="74,5 68,13 68,50 80,50 80,13" fill="#ca8a04" stroke="#854d0e" stroke-width="1"/><polygon points="102,5 96,13 96,50 108,50 108,13" fill="#ca8a04" stroke="#854d0e" stroke-width="1"/></svg>`
         },
         {
           id: 'd_air_mancur',
           name: 'Air Mancur',
-          svg: `<svg viewBox="0 0 80 70" class="w-full h-full"><ellipse cx="40" cy="55" rx="35" ry="12" fill="#0284c7" stroke="#0369a1" stroke-width="2"/><ellipse cx="40" cy="53" rx="28" ry="8" fill="#38bdf8"/><rect x="36" y="25" width="8" height="28" fill="#94a3b8"/><ellipse cx="40" cy="25" rx="16" ry="5" fill="#64748b"/><path d="M 40 25 Q 25 5 15 20 M 40 25 Q 55 5 65 20" stroke="#bae6fd" stroke-width="3" fill="none"/></svg>`
+          w: 90, h: 75,
+          svg: `<svg viewBox="0 0 90 75" class="w-full h-full"><ellipse cx="45" cy="60" rx="40" ry="13" fill="#0284c7" stroke="#0369a1" stroke-width="2"/><ellipse cx="45" cy="58" rx="32" ry="9" fill="#38bdf8"/><rect x="40" y="28" width="10" height="30" fill="#94a3b8"/><ellipse cx="45" cy="28" rx="18" ry="6" fill="#64748b"/><path d="M 45 28 Q 28 6 16 22 M 45 28 Q 62 6 74 22" stroke="#bae6fd" stroke-width="3" fill="none"/></svg>`
         },
         {
           id: 'd_lampu',
           name: 'Lampu Taman',
-          svg: `<svg viewBox="0 0 40 80" class="w-full h-full"><rect x="18" y="25" width="4" height="50" fill="#334155"/><rect x="12" y="70" width="16" height="8" fill="#1e293b" rx="2"/><polygon points="20,8 10,25 30,25" fill="#fde047" stroke="#ca8a04" stroke-width="2"/><circle cx="20" cy="18" r="6" fill="#fef08a"/></svg>`
+          w: 45, h: 85,
+          svg: `<svg viewBox="0 0 45 85" class="w-full h-full"><rect x="20" y="28" width="5" height="52" fill="#334155"/><rect x="14" y="76" width="17" height="8" fill="#1e293b" rx="2"/><polygon points="22.5,8 11,28 34,28" fill="#fde047" stroke="#ca8a04" stroke-width="2"/><circle cx="22.5" cy="20" r="6" fill="#fef08a"/></svg>`
         }
       ],
       langit: [
         {
+          id: 'l_pelangi',
+          name: 'Pelangi Indah',
+          w: 180, h: 90,
+          svg: `<svg viewBox="0 0 180 90" class="w-full h-full"><path d="M 10 85 A 80 80 0 0 1 170 85" fill="none" stroke="#ef4444" stroke-width="6"/><path d="M 18 85 A 72 72 0 0 1 162 85" fill="none" stroke="#f97316" stroke-width="6"/><path d="M 26 85 A 64 64 0 0 1 154 85" fill="none" stroke="#eab308" stroke-width="6"/><path d="M 34 85 A 56 56 0 0 1 146 85" fill="none" stroke="#22c55e" stroke-width="6"/><path d="M 42 85 A 48 48 0 0 1 138 85" fill="none" stroke="#3b82f6" stroke-width="6"/><path d="M 50 85 A 40 40 0 0 1 130 85" fill="none" stroke="#a855f7" stroke-width="6"/></svg>`
+        },
+        {
+          id: 'l_kelelawar',
+          name: 'Burung Kelelawar',
+          w: 65, h: 40,
+          svg: `<svg viewBox="0 0 65 40" class="w-full h-full"><path d="M 32.5 18 C 25 8, 12 5, 2 12 C 8 20, 15 22, 22 18 C 25 24, 30 24, 32.5 20 C 35 24, 40 24, 43 18 C 50 22, 57 20, 63 12 C 53 5, 40 8, 32.5 18 Z" fill="#1e293b"/><circle cx="30" cy="14" r="1.5" fill="#ef4444"/><circle cx="35" cy="14" r="1.5" fill="#ef4444"/></svg>`
+        },
+        {
           id: 'l_matahari',
           name: 'Matahari Cerah',
-          svg: `<svg viewBox="0 0 80 80" class="w-full h-full"><circle cx="40" cy="40" r="22" fill="#f59e0b" stroke="#d97706" stroke-width="2"/><g stroke="#f59e0b" stroke-width="4" stroke-linecap="round"><line x1="40" y1="8" x2="40" y2="2"/><line x1="40" y1="72" x2="40" y2="78"/><line x1="8" y1="40" x2="2" y2="40"/><line x1="72" y1="40" x2="78" y2="40"/><line x1="17" y1="17" x2="12" y2="12"/><line x1="63" y1="63" x2="68" y2="68"/><line x1="17" y1="63" x2="12" y2="68"/><line x1="63" y1="17" x2="68" y2="12"/></g></svg>`
+          w: 85, h: 85,
+          svg: `<svg viewBox="0 0 85 85" class="w-full h-full"><circle cx="42.5" cy="42.5" r="24" fill="#f59e0b" stroke="#d97706" stroke-width="2"/><g stroke="#f59e0b" stroke-width="4" stroke-linecap="round"><line x1="42.5" y1="10" x2="42.5" y2="3"/><line x1="42.5" y1="75" x2="42.5" y2="82"/><line x1="10" y1="42.5" x2="3" y2="42.5"/><line x1="75" y1="42.5" x2="82" y2="42.5"/><line x1="19" y1="19" x2="14" y2="14"/><line x1="66" y1="66" x2="71" y2="71"/><line x1="19" y1="66" x2="14" y2="71"/><line x1="66" y1="19" x2="71" y2="14"/></g></svg>`
         },
         {
           id: 'l_awan1',
           name: 'Awan Putih 1',
-          svg: `<svg viewBox="0 0 90 50" class="w-full h-full"><path d="M 20 40 L 70 40 C 80 40 85 30 78 22 C 80 10 65 5 55 12 C 48 2 30 5 25 15 C 12 12 5 25 12 35 C 15 40 20 40 20 40 Z" fill="#ffffff" opacity="0.95" stroke="#cbd5e1" stroke-width="2"/></svg>`
+          w: 100, h: 55,
+          svg: `<svg viewBox="0 0 100 55" class="w-full h-full"><path d="M 22 44 L 78 44 C 88 44 94 33 86 24 C 88 11 72 5 61 13 C 53 2 33 5 28 16 C 13 13 5 28 13 39 C 16 44 22 44 22 44 Z" fill="#ffffff" opacity="0.95" stroke="#cbd5e1" stroke-width="2"/></svg>`
         },
         {
           id: 'l_awan2',
           name: 'Awan Putih 2',
-          svg: `<svg viewBox="0 0 80 45" class="w-full h-full"><path d="M 15 35 L 65 35 C 73 35 78 28 72 20 C 73 10 58 5 50 12 C 42 3 28 8 23 16 C 10 15 5 25 12 32 Z" fill="#f1f5f9" opacity="0.9" stroke="#94a3b8" stroke-width="1.5"/></svg>`
+          w: 90, h: 50,
+          svg: `<svg viewBox="0 0 90 50" class="w-full h-full"><path d="M 18 38 L 72 38 C 80 38 86 30 79 22 C 80 11 64 5 55 13 C 46 3 31 8 25 17 C 11 16 5 27 13 35 Z" fill="#f1f5f9" opacity="0.9" stroke="#94a3b8" stroke-width="1.5"/></svg>`
         },
         {
           id: 'l_burung',
           name: 'Burung Terbang',
-          svg: `<svg viewBox="0 0 70 35" class="w-full h-full"><path d="M 5 20 Q 20 5 35 20 Q 50 5 65 20" stroke="#1e293b" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`
+          w: 75, h: 40,
+          svg: `<svg viewBox="0 0 75 40" class="w-full h-full"><path d="M 5 22 Q 22 6 37.5 22 Q 53 6 70 22" stroke="#1e293b" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`
         }
       ]
     };
 
-    // Global State Variables
+    /* ================= SYSTEM AUDIO SINTESIS TONE.JS ================= */
+    let isAudioInit = false;
+    let synth, membraneSynth, polySynth;
+    let bgmSynth, bgmLoop, isBgmPlaying = true;
+
+    function initAudioEngine() {
+      if (!isAudioInit && window.Tone) {
+        try {
+          Tone.start();
+          synth = new Tone.Synth({
+            oscillator: { type: 'sine' },
+            envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }
+          }).toDestination();
+          synth.volume.value = -6;
+
+          membraneSynth = new Tone.MembraneSynth().toDestination();
+          membraneSynth.volume.value = -4;
+
+          polySynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: 'triangle' },
+            envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.3 }
+          }).toDestination();
+          polySynth.volume.value = -6;
+
+          isAudioInit = true;
+          initBGM();
+        } catch (e) {
+          console.warn('Audio Init Warning:', e);
+        }
+      }
+    }
+
+    /* ================= MUSIK LATAR (BACKSOUND) ================= */
+    function initBGM() {
+      if (!bgmSynth && window.Tone) {
+        // Synth melodi musik latar dengan volume lembut (-20 dB vs SFX -6 dB)
+        bgmSynth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: 'triangle' },
+          envelope: { attack: 0.1, decay: 0.4, sustain: 0.2, release: 0.8 }
+        }).toDestination();
+        bgmSynth.volume.value = -20; 
+
+        // Melodi latar ceria & lembut untuk anak-anak
+        const chordNotes = [
+          ["C4", "E4", "G4"], null, ["E4", "G4"], null,
+          ["A3", "C4", "E4"], null, ["C4", "E4"], null,
+          ["F3", "A3", "C4"], null, ["A3", "C4"], null,
+          ["G3", "B3", "D4"], null, ["B3", "D4"], null
+        ];
+
+        let index = 0;
+        bgmLoop = new Tone.Loop(time => {
+          const notes = chordNotes[index % chordNotes.length];
+          if (notes) {
+            bgmSynth.triggerAttackRelease(notes, "8n", time, 0.35);
+          }
+          index++;
+        }, "8n");
+
+        Tone.Transport.bpm.value = 100;
+      }
+    }
+
+    function startBGM() {
+      initAudioEngine();
+      if (!isAudioInit) return;
+
+      if (Tone.Transport.state !== 'started') {
+        Tone.Transport.start();
+      }
+      if (bgmLoop && bgmLoop.state !== 'started') {
+        bgmLoop.start(0);
+      }
+      isBgmPlaying = true;
+      updateBgmUI();
+    }
+
+    function toggleBGM() {
+      initAudioEngine();
+      if (isBgmPlaying) {
+        if (bgmLoop) bgmLoop.stop();
+        isBgmPlaying = false;
+      } else {
+        startBGM();
+      }
+      updateBgmUI();
+    }
+
+    function updateBgmUI() {
+      const icon = document.getElementById('bgm-icon');
+      const text = document.getElementById('bgm-text');
+      if (icon && text) {
+        if (isBgmPlaying) {
+          icon.className = "fa-solid fa-music text-amber-400";
+          text.innerText = "Musik: On";
+        } else {
+          icon.className = "fa-solid fa-volume-xmark text-slate-400";
+          text.innerText = "Musik: Off";
+        }
+      }
+    }
+
+    function playSFX(type, param) {
+      initAudioEngine();
+      if (isBgmPlaying && bgmLoop && bgmLoop.state !== 'started') {
+        startBGM();
+      }
+      if (!isAudioInit) return;
+
+      try {
+        const now = Tone.now();
+        switch (type) {
+          case 'click':
+            synth.triggerAttackRelease("C5", "16n", now);
+            break;
+          case 'select':
+            synth.triggerAttackRelease("E5", "16n", now);
+            break;
+          case 'drop':
+            membraneSynth.triggerAttackRelease("C2", "8n", now);
+            break;
+          case 'drag':
+            synth.triggerAttackRelease("G4", "32n", now);
+            break;
+          case 'rotate':
+            const noteR = 250 + (parseInt(param) || 0) * 1.2;
+            synth.triggerAttackRelease(noteR, "32n", now);
+            break;
+          case 'scale':
+            const noteS = 200 + (parseFloat(param) || 1) * 200;
+            synth.triggerAttackRelease(noteS, "32n", now);
+            break;
+          case 'duplicate':
+            polySynth.triggerAttackRelease(["C5", "G5"], "16n", now);
+            break;
+          case 'delete':
+            membraneSynth.triggerAttackRelease("G1", "16n", now);
+            break;
+          case 'undo':
+            synth.triggerAttackRelease("F4", "16n", now);
+            break;
+          case 'redo':
+            synth.triggerAttackRelease("A4", "16n", now);
+            break;
+          case 'save':
+            polySynth.triggerAttackRelease(["C5", "E5", "G5", "C6"], "8n", now);
+            break;
+          case 'evaluate':
+            polySynth.triggerAttackRelease(["G4", "C5", "E5", "G5"], "8n", now);
+            break;
+          case 'reset':
+            synth.triggerAttackRelease("C3", "8n", now);
+            break;
+          case 'start':
+            polySynth.triggerAttackRelease(["C4", "E4", "G4"], "8n", now);
+            break;
+        }
+      } catch (err) {
+        // Silent catch jika audio belum diizinkan browser
+      }
+    }
+
+    /* ================= GLOBAL STATE & CANVAS CALIBRATION ================= */
     let userData = { nama: '', kelas: '5' };
     let canvasItems = [];
     let selectedItemId = null;
@@ -570,14 +798,14 @@
     let isGridVisible = false;
     let currentCanvasScale = 1;
 
-    // Auto-scale canvas container to fit inside the viewport dynamically
+    // Auto-scale canvas container agar pas responsive di dalam viewport
     function updateCanvasScale() {
       const panel = document.getElementById('canvas-center-panel');
       const container = document.getElementById('canvas-container');
       if (!panel || !container) return;
 
-      const availableWidth = panel.clientWidth - 32;
-      const availableHeight = panel.clientHeight - 32;
+      const availableWidth = panel.clientWidth - 24;
+      const availableHeight = panel.clientHeight - 24;
 
       if (availableWidth <= 0 || availableHeight <= 0) return;
 
@@ -622,10 +850,11 @@
 
     window.addEventListener('resize', updateCanvasScale);
 
-    /* ================= ALUR NAVIGASI & SCREEN ================= */
+    /* ================= ALUR NAVIGASI ================= */
     function goToHomeScreen() {
+      playSFX('click');
       if (canvasItems.length > 0) {
-        if (!confirm('Apakah kamu yakin ingin kembali ke Halaman Utama / Cover? (Pastikan kamu sudah menyimpan desainmu)')) {
+        if (!confirm('Apakah kamu yakin ingin kembali ke Halaman Awal? (Pastikan kamu sudah menyimpan desainmu)')) {
           return;
         }
       }
@@ -635,6 +864,8 @@
     }
 
     function goToDataScreen() {
+      playSFX('start');
+      startBGM();
       document.getElementById('screen-data-diri').classList.remove('hidden');
     }
 
@@ -643,6 +874,7 @@
       const nama = document.getElementById('input-nama').value.trim();
       if (!nama) return;
 
+      playSFX('click');
       userData.nama = nama;
       document.getElementById('display-user-name').innerText = nama;
 
@@ -650,7 +882,6 @@
       document.getElementById('screen-data-diri').classList.add('hidden');
       document.getElementById('screen-main-game').classList.remove('hidden');
 
-      // Initialize Palette, History & Canvas Scale
       renderPalette();
       saveHistoryState();
       loadLocalStorage();
@@ -659,6 +890,7 @@
     }
 
     function toggleFullScreen() {
+      playSFX('click');
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
       } else {
@@ -679,8 +911,10 @@
         card.draggable = true;
         
         card.ondragstart = (e) => handlePaletteDragStart(e, item);
-        // Fallback Click to Add for Mobile / Tablet
-        card.onclick = () => addItemToCanvas(item);
+        card.onclick = () => {
+          playSFX('click');
+          addItemToCanvas(item);
+        };
 
         card.innerHTML = `
           <div class="h-12 w-full flex items-center justify-center p-1 group-hover:scale-105 transition-transform overflow-hidden">
@@ -694,6 +928,7 @@
     }
 
     function handlePaletteDragStart(e, item) {
+      playSFX('drag');
       e.dataTransfer.setData('text/plain', JSON.stringify(item));
     }
 
@@ -711,11 +946,11 @@
         const itemData = JSON.parse(dataText);
         const rect = document.getElementById('canvas-workspace').getBoundingClientRect();
         
-        // Posisi Drop relative terkalibrasi skala kanvas
-        const x = ((e.clientX - rect.left) / currentCanvasScale) - 50;
-        const y = ((e.clientY - rect.top) / currentCanvasScale) - 40;
+        const posX = ((e.clientX - rect.left) / currentCanvasScale) - ((itemData.w || 100) / 2);
+        const posY = ((e.clientY - rect.top) / currentCanvasScale) - ((itemData.h || 100) / 2);
 
-        addItemToCanvas(itemData, x, y);
+        playSFX('drop');
+        addItemToCanvas(itemData, posX, posY);
       } catch (err) {
         console.error('Error handling drop:', err);
       }
@@ -727,8 +962,10 @@
         name: itemData.name,
         category: getCategoryOfItem(itemData.id),
         svg: itemData.svg,
-        x: Math.max(10, Math.min(posX, 1100)),
-        y: Math.max(10, Math.min(posY, 700)),
+        w: itemData.w || 100,
+        h: itemData.h || 100,
+        x: Math.max(0, Math.min(posX, 1200 - (itemData.w || 100))),
+        y: Math.max(0, Math.min(posY, 800 - (itemData.h || 100))),
         rotation: 0,
         scale: 1,
         zIndex: canvasItems.length + 1
@@ -756,6 +993,8 @@
         const el = document.createElement('div');
         el.id = item.id;
         el.className = `canvas-item ${item.id === selectedItemId ? 'selected' : ''}`;
+        el.style.width = `${item.w}px`;
+        el.style.height = `${item.h}px`;
         el.style.left = `${item.x}px`;
         el.style.top = `${item.y}px`;
         el.style.zIndex = item.zIndex;
@@ -763,7 +1002,6 @@
 
         el.innerHTML = item.svg;
 
-        // Pointer / Drag event di dalam kanvas
         el.onmousedown = (e) => startMoveCanvasItem(e, item.id);
         el.ontouchstart = (e) => startMoveCanvasItemTouch(e, item.id);
         
@@ -773,9 +1011,9 @@
       updateInspectorUI();
     }
 
-    /* Moving Canvas Item via Mouse (Terkalibrasi Skala) */
     function startMoveCanvasItem(e, itemId) {
       e.stopPropagation();
+      playSFX('select');
       selectItem(itemId);
 
       const item = canvasItems.find(i => i.id === itemId);
@@ -801,6 +1039,7 @@
       function onMouseUp() {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
+        playSFX('drop');
         saveHistoryState();
       }
 
@@ -808,9 +1047,9 @@
       document.addEventListener('mouseup', onMouseUp);
     }
 
-    /* Moving Canvas Item via Touch (Terkalibrasi Skala) */
     function startMoveCanvasItemTouch(e, itemId) {
       e.stopPropagation();
+      playSFX('select');
       selectItem(itemId);
 
       const touch = e.touches[0];
@@ -838,6 +1077,7 @@
       function onTouchEnd() {
         document.removeEventListener('touchmove', onTouchMove);
         document.removeEventListener('touchend', onTouchEnd);
+        playSFX('drop');
         saveHistoryState();
       }
 
@@ -845,7 +1085,6 @@
       document.addEventListener('touchend', onTouchEnd);
     }
 
-    /* ================= SELEKSI & INSPEKTOR ================= */
     function selectItem(itemId) {
       selectedItemId = itemId;
       renderCanvasItems();
@@ -853,6 +1092,7 @@
 
     function deselectAll(e) {
       if (e.target.id === 'canvas-workspace' || e.target.id === 'canvas-container') {
+        if (selectedItemId !== null) playSFX('click');
         selectedItemId = null;
         renderCanvasItems();
       }
@@ -887,6 +1127,7 @@
       if (item) {
         item.rotation = parseInt(val);
         document.getElementById('rotate-value').innerText = `${val}°`;
+        playSFX('rotate', val);
         renderCanvasItems();
       }
     }
@@ -897,6 +1138,7 @@
       if (item) {
         item.scale = parseFloat(val);
         document.getElementById('scale-value').innerText = `${val}x`;
+        playSFX('scale', val);
         renderCanvasItems();
       }
     }
@@ -906,6 +1148,7 @@
       const item = canvasItems.find(i => i.id === selectedItemId);
       if (item) {
         item.zIndex = Math.max(1, item.zIndex + delta);
+        playSFX('click');
         renderCanvasItems();
         saveHistoryState();
       }
@@ -915,6 +1158,7 @@
       if (!selectedItemId) return;
       const item = canvasItems.find(i => i.id === selectedItemId);
       if (item) {
+        playSFX('duplicate');
         const cloned = {
           ...item,
           id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
@@ -931,6 +1175,7 @@
 
     function deleteSelected() {
       if (!selectedItemId) return;
+      playSFX('delete');
       canvasItems = canvasItems.filter(i => i.id !== selectedItemId);
       selectedItemId = null;
       renderCanvasItems();
@@ -939,7 +1184,6 @@
 
     /* ================= UNDO / REDO / GRID ================= */
     function saveHistoryState() {
-      // Potong stack jika undo lalu add baru
       if (historyStep < historyStack.length - 1) {
         historyStack = historyStack.slice(0, historyStep + 1);
       }
@@ -949,6 +1193,7 @@
 
     function undo() {
       if (historyStep > 0) {
+        playSFX('undo');
         historyStep--;
         canvasItems = JSON.parse(historyStack[historyStep]);
         selectedItemId = null;
@@ -958,6 +1203,7 @@
 
     function redo() {
       if (historyStep < historyStack.length - 1) {
+        playSFX('redo');
         historyStep++;
         canvasItems = JSON.parse(historyStack[historyStep]);
         selectedItemId = null;
@@ -966,13 +1212,16 @@
     }
 
     function toggleGrid() {
+      playSFX('click');
       isGridVisible = !isGridVisible;
       const gridEl = document.getElementById('canvas-grid');
       gridEl.style.opacity = isGridVisible ? '1' : '0';
     }
 
     function clearCanvasPrompt() {
+      playSFX('click');
       if (confirm('Apakah kamu yakin ingin menghapus seluruh desain rumah?')) {
+        playSFX('reset');
         canvasItems = [];
         selectedItemId = null;
         renderCanvasItems();
@@ -980,26 +1229,26 @@
       }
     }
 
-    /* ================= EVALUASI KREATIVITAS & PENILAIAN AI ================= */
+    /* ================= EVALUASI KREATIVITAS & PENILAIAN ================= */
     function evaluateDesign() {
+      playSFX('click');
       if (canvasItems.length === 0) {
-        alert('Kanvas masih kosong! Tambahkan objek bangunan, pintu, jendela, dan dekorasi terlebih dahulu.');
+        showToast('Kanvas masih kosong! Tambahkan objek terlebih dahulu.', 'warning');
         return;
       }
 
-      // Hitung variasi kategori
+      playSFX('evaluate');
+
       const categoriesUsed = new Set(canvasItems.map(i => i.category));
       const totalItems = canvasItems.length;
 
-      // Kriteria Skor (0-100)
       let scoreBuilding = Math.min(30, (canvasItems.filter(i => i.category === 'bangunan').length) * 10);
       let scoreVariety = Math.min(35, categoriesUsed.size * 7);
       let scoreCompleteness = Math.min(20, totalItems * 2);
-      let scoreBalance = 15; // Base score komposisi visual
+      let scoreBalance = 15;
 
       let totalScore = Math.min(100, scoreBuilding + scoreVariety + scoreCompleteness + scoreBalance);
 
-      // Tentukan Badge Reward
       let badgeTitle = "Desainer Pemula 🌟";
       let badgeIcon = "🌟";
       if (totalScore >= 90) {
@@ -1013,14 +1262,12 @@
         badgeIcon = "🏡";
       }
 
-      // Generate Umpan Balik Edukatif
       let feedback = [];
       if (categoriesUsed.has('alam')) feedback.push("Taman dan Pepohonan membuat suasana rumah asri!");
       if (categoriesUsed.has('langit')) feedback.push("Awan & Matahari melengkapi komposisi pemandangan 2D.");
       if (categoriesUsed.has('pintu') && categoriesUsed.has('jendela')) feedback.push("Pintu dan jendela tertata presisi pada bangunan.");
       if (feedback.length === 0) feedback.push("Cobalah menambahkan pohon dan taman agar desain rumahmu makin hidup!");
 
-      // Update Modal Visual
       document.getElementById('final-score-val').innerText = totalScore;
       document.getElementById('reward-badge-title').innerText = badgeTitle;
       document.getElementById('reward-badge-icon').innerText = badgeIcon;
@@ -1034,7 +1281,6 @@
 
       document.getElementById('modal-score').classList.remove('hidden');
 
-      // Animasi Confetti
       confetti({
         particleCount: 100,
         spread: 70,
@@ -1043,11 +1289,13 @@
     }
 
     function closeScoreModal() {
+      playSFX('click');
       document.getElementById('modal-score').classList.add('hidden');
     }
 
-    /* ================= STORAGE & EKSPOR (PNG / LOCALSTORAGE) ================= */
+    /* ================= LOCAL STORAGE ================= */
     function saveDesign() {
+      playSFX('save');
       const saveData = {
         user: userData,
         items: canvasItems,
@@ -1075,9 +1323,10 @@
       }
     }
 
-    /* ================= FITUR UNDUH GAMBAR (PNG / JPG & PORTRAIT) ================= */
+    /* ================= FITUR UNDUH GAMBAR PRESISI 1:1 SAMA PERSIS ================= */
     function toggleDownloadMenu(e) {
       if (e) e.stopPropagation();
+      playSFX('click');
       const menu = document.getElementById('download-menu');
       if (menu) menu.classList.toggle('hidden');
     }
@@ -1089,28 +1338,19 @@
       }
     });
 
-    function prepareSvgData(svgRaw) {
+    function prepareSvgData(svgRaw, defaultW, defaultH) {
       let svg = svgRaw.trim();
       if (!svg.includes('xmlns=')) {
         svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
       }
-
-      let width = 100;
-      let height = 100;
-      const viewBoxMatch = svg.match(/viewBox=["']\s*0\s+0\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s*["']/i);
-      if (viewBoxMatch) {
-        width = parseFloat(viewBoxMatch[1]) || 100;
-        height = parseFloat(viewBoxMatch[2]) || 100;
-      }
-
       if (!svg.includes('width=')) {
-        svg = svg.replace('<svg', `<svg width="${width}" height="${height}"`);
+        svg = svg.replace('<svg', `<svg width="${defaultW}" height="${defaultH}"`);
       }
-
-      return { svg, width, height };
+      return { svg, width: defaultW, height: defaultH };
     }
 
     function downloadFormat(type = 'png', orientation = 'landscape') {
+      playSFX('click');
       if (canvasItems.length === 0) {
         showToast('Kanvas masih kosong! Tambahkan objek terlebih dahulu.', 'warning');
         return;
@@ -1118,14 +1358,13 @@
 
       showToast('Sedang menyiapkan gambar hasil karyamu...', 'info');
 
-      // Sembunyikan seleksi elemen sebelum export
+      // Unselect item agar garis dashed seleksi tidak ikut terunduh
       selectedItemId = null;
       renderCanvasItems();
 
       const isPortrait = orientation === 'portrait';
       const canvas = document.createElement('canvas');
       
-      // Dimensi Canvas Ekspor
       if (isPortrait) {
         canvas.width = 800;
         canvas.height = 1100;
@@ -1136,39 +1375,43 @@
       
       const ctx = canvas.getContext('2d');
 
-      // Tentukan offset & skala canvas area
       let renderX = 0, renderY = 0, renderW = canvas.width, renderH = canvas.height;
       if (isPortrait) {
-        renderY = 120; // Ruang header atas
-        renderH = 850; // Tinggi area karya
+        renderY = 120;
+        renderH = 850;
       }
 
-      // Background dasar (Putih untuk JPG)
+      // Background dasar jika JPG
       if (type === 'jpg') {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      // Draw Sky & Grass Canvas
+      // Exact Sky & Grass Render (Sama Persis dengan CSS Workarea)
       const skyHeight = renderH * 0.62;
       const skyGradient = ctx.createLinearGradient(0, renderY, 0, renderY + skyHeight);
-      skyGradient.addColorStop(0, '#bae6fd');
+      skyGradient.addColorStop(0, '#7dd3fc');
+      skyGradient.addColorStop(0.5, '#bae6fd');
       skyGradient.addColorStop(1, '#e0f2fe');
       ctx.fillStyle = skyGradient;
       ctx.fillRect(0, renderY, renderW, skyHeight);
 
       const grassGradient = ctx.createLinearGradient(0, renderY + skyHeight, 0, renderY + renderH);
       grassGradient.addColorStop(0, '#22c55e');
-      grassGradient.addColorStop(1, '#15803d');
+      grassGradient.addColorStop(1, '#059669');
       ctx.fillStyle = grassGradient;
       ctx.fillRect(0, renderY + skyHeight, renderW, renderH - skyHeight);
 
-      // Skala penyesuaian dari kanvas utama (1200x800) ke kanvas ekspor
+      // Garis Pembatas Rumput 4px
+      ctx.fillStyle = 'rgba(4, 120, 87, 0.3)';
+      ctx.fillRect(0, renderY + skyHeight - 4, renderW, 4);
+
+      // Skala Kalibrasi
       const scaleX = renderW / 1200;
       const scaleY = renderH / 800;
 
-      // Render Ornamen Header & Footer Portrait
       if (isPortrait) {
+        // Frame Header Portrait
         ctx.fillStyle = '#0f172a';
         ctx.fillRect(0, 0, 800, 120);
 
@@ -1178,14 +1421,15 @@
 
         ctx.fillStyle = '#ffffff';
         ctx.font = '500 15px Inter, sans-serif';
-        ctx.fillText(`Arsitek Cilik: ${userData.nama || 'Siswa'} | Kelas ${userData.kelas || '5'} SD Negeri 2 Sendang Ayu`, 30, 78);
+        ctx.fillText(`Arsitek Cilik : ${userData.nama || 'Siswa'} | Kelas ${userData.kelas || '5'} SD Negeri 2 Sendang Ayu`, 30, 78);
 
+        // Frame Footer Portrait
         ctx.fillStyle = '#0f172a';
         ctx.fillRect(0, 970, 800, 130);
 
         ctx.fillStyle = '#38bdf8';
         ctx.font = 'bold 16px Inter, sans-serif';
-        ctx.fillText('IPAS KELAS 5 - KARYA SENI RUPA 2 DIMENSI', 30, 1010);
+        ctx.fillText('SENI DAN BUDAYA KELAS 5 - KARYA SENI RUPA 2 DIMENSI', 30, 1010);
 
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 14px Inter, sans-serif';
@@ -1202,30 +1446,38 @@
         hasTriggered = true;
 
         if (!isPortrait) {
-          ctx.fillStyle = '#1e293b';
-          ctx.font = 'bold 15px Inter, sans-serif';
-          ctx.fillText(`Karya: ${userData.nama || 'Siswa'} (Kelas ${userData.kelas || '5'}) - SD Negeri 2 Sendang Ayu | Created By Pak LEHAN`, 20, 780);
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.7)';
+          ctx.fillRect(15, 755, 1170, 35);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 14px Inter, sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(`Hasil Karya : ${userData.nama || 'Siswa'} (Kelas ${userData.kelas || '5'}) - SD Negeri 2 Sendang Ayu | Created By Pak LEHAN`, 30, 778);
         }
 
         triggerDownload(canvas, type, orientation);
       };
 
       sortedItems.forEach(item => {
-        const { svg, width, height } = prepareSvgData(item.svg);
+        const itemW = item.w || 100;
+        const itemH = item.h || 100;
+
+        const { svg } = prepareSvgData(item.svg, itemW, itemH);
         const img = new Image();
         const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
         const url = URL.createObjectURL(svgBlob);
 
         img.onload = () => {
           ctx.save();
-          // Hitung pusat objek
-          const centerX = (item.x * scaleX) + renderX + ((width * scaleX) / 2);
-          const centerY = (item.y * scaleY) + renderY + ((height * scaleY) / 2);
+          
+          // Hitung Titik Tengah Objek
+          const centerX = (item.x * scaleX) + renderX + ((itemW * scaleX) / 2);
+          const centerY = (item.y * scaleY) + renderY + ((itemH * scaleY) / 2);
           
           ctx.translate(centerX, centerY);
           ctx.rotate((item.rotation * Math.PI) / 180);
           ctx.scale(item.scale * scaleX, item.scale * scaleY);
-          ctx.drawImage(img, -width / 2, -height / 2, width, height);
+          
+          ctx.drawImage(img, -itemW / 2, -itemH / 2, itemW, itemH);
           ctx.restore();
 
           URL.revokeObjectURL(url);
@@ -1246,7 +1498,6 @@
         img.src = url;
       });
 
-      // Timeout cadangan jika terdapat aset yang lambat dimuat
       setTimeout(() => {
         if (!hasTriggered) finishExport();
       }, 1500);
@@ -1273,6 +1524,7 @@
             link.click();
             document.body.removeChild(link);
             setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+            playSFX('save');
             showToast(`Gambar (${ext.toUpperCase()}) berhasil diunduh!`, 'success');
           }, mime, 0.95);
         } else {
@@ -1292,14 +1544,12 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      playSFX('save');
       showToast(`Gambar (${ext.toUpperCase()}) berhasil diunduh!`, 'success');
     }
 
-    function downloadPNG() {
-      downloadFormat('png', 'landscape');
-    }
-
     function printDesign() {
+      playSFX('click');
       window.print();
     }
   </script>
