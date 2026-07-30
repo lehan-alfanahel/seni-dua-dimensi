@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bangun Rumah Mewah - Mini Game Edukasi Seni dan Budaya</title>
+  <title>Desain Rumah Mewah - Game Edukasi Seni Budaya</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -171,9 +171,9 @@
     <!-- Top Header & Toolbar -->
     <header class="bg-slate-900 text-white px-3 py-2 flex items-center justify-between border-b border-slate-800 gap-2 shrink-0 z-30">
       <div class="flex items-center gap-2 md:gap-3 shrink-0">
-        <div class="bg-blue-600 text-white p-1.5 md:p-2 rounded-lg font-black text-xs md:text-sm">
+        <button onclick="goToHomeScreen()" title="Kembali ke Halaman Cover Awal" class="bg-blue-600 hover:bg-blue-500 text-white p-1.5 md:p-2 rounded-lg font-black text-xs md:text-sm transition-all transform active:scale-95 flex items-center justify-center shadow-md">
           <i class="fa-solid fa-house"></i>
-        </div>
+        </button>
         <div>
           <h1 class="text-xs md:text-sm font-bold text-slate-100 leading-tight">Level Utama : Bangunan Rumah</h1>
           <p class="text-[10px] md:text-xs text-slate-400">Arsitek : <span id="display-user-name" class="text-amber-400 font-semibold">Siswa</span> - Kelas 5</p>
@@ -209,14 +209,14 @@
             <i class="fa-solid fa-download text-blue-400"></i> <span class="hidden sm:inline">Unduh Gambar</span> <i class="fa-solid fa-chevron-down text-[10px]"></i>
           </button>
           <div id="download-menu" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-1 z-50 text-slate-700">
-            <button onclick="downloadFormat('png', 'portrait')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium">
-              <i class="fa-regular fa-file-image text-blue-600"></i> PNG (Portrait)
+            <button onclick="downloadFormat('png', 'landscape')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium">
+              <i class="fa-regular fa-file-image text-blue-600"></i> PNG (Landscape)
             </button>
-            <button onclick="downloadFormat('jpg', 'portrait')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium">
-              <i class="fa-regular fa-file-image text-amber-600"></i> JPG (Portrait)
+            <button onclick="downloadFormat('jpg', 'landscape')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium">
+              <i class="fa-regular fa-file-image text-amber-600"></i> JPG (Landscape)
             </button>
-            <button onclick="downloadFormat('png', 'landscape')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium border-t border-slate-100">
-              <i class="fa-regular fa-file-image text-emerald-600"></i> PNG (Landscape)
+            <button onclick="downloadFormat('png', 'portrait')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium border-t border-slate-100">
+              <i class="fa-regular fa-file-image text-emerald-600"></i> PNG (Portrait)
             </button>
           </div>
         </div>
@@ -394,55 +394,6 @@
 
   <!-- JavaScript Logic -->
   <script>
-    /* ================= DATA KATALOG OBJEK (SVG / Emoji High Quality) ================= */
-    const ASSET_CATALOG = {
-      bangunan: [
-        { id: 'b1', name: 'Pondasi Rumah', svg: `<svg viewBox="0 0 100 30" width="120"><rect width="100" height="30" rx="4" fill="#78350f" stroke="#451a03" stroke-width="2"/></svg>` },
-        { id: 'b2', name: 'Dinding Bata', svg: `<svg viewBox="0 0 120 90" width="130"><rect width="120" height="90" fill="#fdba74" stroke="#c2410c" stroke-width="3"/><line x1="0" y1="30" x2="120" y2="30" stroke="#c2410c" stroke-width="2"/><line x1="0" y1="60" x2="120" y2="60" stroke="#c2410c" stroke-width="2"/></svg>` },
-        { id: 'b3', name: 'Dinding Modern', svg: `<svg viewBox="0 0 120 90" width="130"><rect width="120" height="90" fill="#f8fafc" stroke="#64748b" stroke-width="3"/></svg>` },
-        { id: 'b4', name: 'Atap Segitiga Merah', svg: `<svg viewBox="0 0 140 70" width="150"><polygon points="70,5 5,65 135,65" fill="#dc2626" stroke="#991b1b" stroke-width="3"/></svg>` },
-        { id: 'b5', name: 'Atap Biru Klasik', svg: `<svg viewBox="0 0 140 70" width="150"><polygon points="70,5 5,65 135,65" fill="#2563eb" stroke="#1e40af" stroke-width="3"/></svg>` },
-        { id: 'b6', name: 'Atap Datar Modern', svg: `<svg viewBox="0 0 130 25" width="140"><rect width="130" height="25" rx="3" fill="#334155" stroke="#0f172a" stroke-width="2"/></svg>` },
-        { id: 'b7', name: 'Cerobong Asap', svg: `<svg viewBox="0 0 30 50" width="40"><rect width="30" height="50" fill="#9a3412"/><rect y="0" width="36" x="-3" height="10" fill="#7c2d12"/></svg>` }
-      ],
-      pintu: [
-        { id: 'p1', name: 'Pintu Kayu', svg: `<svg viewBox="0 0 40 70" width="50"><rect width="40" height="70" rx="3" fill="#b45309" stroke="#78350f" stroke-width="2"/><circle cx="8" cy="38" r="3" fill="#f59e0b"/></svg>` },
-        { id: 'p2', name: 'Pintu Kaca Modern', svg: `<svg viewBox="0 0 50 75" width="55"><rect width="50" height="75" rx="2" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/><line x1="25" y1="0" x2="25" y2="75" stroke="#0284c7" stroke-width="2"/></svg>` },
-        { id: 'p3', name: 'Pintu Lengkung', svg: `<svg viewBox="0 0 45 70" width="50"><path d="M0,70 L0,20 Q22.5,-5 45,20 L45,70 Z" fill="#475569" stroke="#1e293b" stroke-width="2"/><circle cx="38" cy="40" r="3" fill="#e2e8f0"/></svg>` }
-      ],
-      jendela: [
-        { id: 'j1', name: 'Jendela Kecil', svg: `<svg viewBox="0 0 35 35" width="40"><rect width="35" height="35" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/><line x1="17.5" y1="0" x2="17.5" y2="35" stroke="#0284c7" stroke-width="2"/><line x1="0" y1="17.5" x2="35" y2="17.5" stroke="#0284c7" stroke-width="2"/></svg>` },
-        { id: 'j2', name: 'Jendela Besar', svg: `<svg viewBox="0 0 60 40" width="65"><rect width="60" height="40" fill="#e0f2fe" stroke="#0369a1" stroke-width="3"/><line x1="30" y1="0" x2="30" y2="40" stroke="#0369a1" stroke-width="2"/><line x1="0" y1="20" x2="60" y2="20" stroke="#0369a1" stroke-width="2"/></svg>` },
-        { id: 'j3', name: 'Jendela Lengkung', svg: `<svg viewBox="0 0 40 50" width="45"><path d="M0,50 L0,20 Q20,0 40,20 L40,50 Z" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/><line x1="20" y1="0" x2="20" y2="50" stroke="#0284c7" stroke-width="2"/></svg>` },
-        { id: 'j4', name: 'Balkon Minimalis', svg: `<svg viewBox="0 0 80 30" width="85"><rect width="80" height="30" fill="none" stroke="#334155" stroke-width="3"/><line x1="15" y1="0" x2="15" y2="30" stroke="#334155" stroke-width="2"/><line x1="30" y1="0" x2="30" y2="30" stroke="#334155" stroke-width="2"/><line x1="45" y1="0" x2="45" y2="30" stroke="#334155" stroke-width="2"/><line x1="60" y1="0" x2="60" y2="30" stroke="#334155" stroke-width="2"/></svg>` }
-      ],
-      garasi: [
-        { id: 'g1', name: 'Garasi 1 Mobil', svg: `<svg viewBox="0 0 90 70" width="100"><rect width="90" height="70" fill="#94a3b8" stroke="#475569" stroke-width="3"/><line x1="0" y1="15" x2="90" y2="15" stroke="#475569" stroke-width="2"/><line x1="0" y1="30" x2="90" y2="30" stroke="#475569" stroke-width="2"/><line x1="0" y1="45" x2="90" y2="45" stroke="#475569" stroke-width="2"/></svg>` },
-        { id: 'g2', name: 'Mobil Sport Merah', svg: `<svg viewBox="0 0 100 45" width="110"><path d="M10,35 L20,15 L70,15 L95,25 L100,35 Z" fill="#ef4444"/><circle cx="25" cy="35" r="8" fill="#1e293b"/><circle cx="75" cy="35" r="8" fill="#1e293b"/></svg>` },
-        { id: 'g3', name: 'Mobil Keluarga Biru', svg: `<svg viewBox="0 0 110 50" width="120"><rect x="5" y="15" width="100" height="25" rx="5" fill="#3b82f6"/><path d="M25,15 L40,5 L75,5 L90,15 Z" fill="#60a5fa"/><circle cx="30" cy="40" r="9" fill="#0f172a"/><circle cx="80" cy="40" r="9" fill="#0f172a"/></svg>` },
-        { id: 'g4', name: 'Sepeda Santai', svg: `<svg viewBox="0 0 60 40" width="60"><circle cx="15" cy="28" r="10" stroke="#334155" stroke-width="3" fill="none"/><circle cx="45" cy="28" r="10" stroke="#334155" stroke-width="3" fill="none"/><polyline points="15,28 30,28 40,12 45,28" stroke="#ef4444" stroke-width="3" fill="none"/></svg>` }
-      ],
-      alam: [
-        { id: 'a1', name: 'Pohon Rindang', svg: `<svg viewBox="0 0 80 110" width="90"><rect x="32" y="60" width="16" height="50" fill="#78350f"/><circle cx="40" cy="45" r="35" fill="#22c55e"/><circle cx="25" cy="35" r="22" fill="#16a34a"/><circle cx="55" cy="35" r="22" fill="#15803d"/></svg>` },
-        { id: 'a2', name: 'Pohon Kelapa', svg: `<svg viewBox="0 0 80 120" width="90"><path d="M35,120 Q45,60 40,10" stroke="#78350f" stroke-width="10" fill="none"/><path d="M40,10 Q10,0 0,20 M40,10 Q70,0 80,20 M40,10 Q20,-10 10,-30 M40,10 Q60,-10 70,-30" stroke="#15803d" stroke-width="6" fill="none"/></svg>` },
-        { id: 'a3', name: 'Semak Hijau', svg: `<svg viewBox="0 0 70 35" width="75"><path d="M5,35 Q0,15 20,10 Q35,0 50,10 Q70,15 65,35 Z" fill="#16a34a"/></svg>` },
-        { id: 'a4', name: 'Taman Bunga', svg: `<svg viewBox="0 0 60 30" width="65"><rect x="0" y="20" width="60" height="10" fill="#15803d"/><circle cx="15" cy="12" r="6" fill="#ec4899"/><circle cx="30" cy="10" r="6" fill="#eab308"/><circle cx="45" cy="12" r="6" fill="#a855f7"/></svg>` },
-        { id: 'a5', name: 'Batu Taman', svg: `<svg viewBox="0 0 50 30" width="55"><path d="M5,28 Q0,10 25,5 Q50,10 45,28 Z" fill="#64748b"/></svg>` }
-      ],
-      dekorasi: [
-        { id: 'd1', name: 'Air Mancur', svg: `<svg viewBox="0 0 70 70" width="75"><ellipse cx="35" cy="55" rx="30" ry="12" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/><rect x="30" y="30" width="10" height="25" fill="#94a3b8"/><path d="M35,30 Q15,10 10,25 M35,30 Q55,10 60,25" stroke="#38bdf8" stroke-width="3" fill="none"/></svg>` },
-        { id: 'd2', name: 'Lampu Taman', svg: `<svg viewBox="0 0 25 70" width="30"><rect x="10" y="20" width="5" height="50" fill="#334155"/><polygon points="12.5,0 0,20 25,20" fill="#fef08a" stroke="#eab308" stroke-width="2"/></svg>` },
-        { id: 'd3', name: 'Pagar Kayu', svg: `<svg viewBox="0 0 90 40" width="95"><rect x="5" y="5" width="12" height="35" fill="#fde047" stroke="#ca8a04"/><rect x="25" y="5" width="12" height="35" fill="#fde047" stroke="#ca8a04"/><rect x="45" y="5" width="12" height="35" fill="#fde047" stroke="#ca8a04"/><rect x="65" y="5" width="12" height="35" fill="#fde047" stroke="#ca8a04"/><line x1="0" y1="15" x2="90" y2="15" stroke="#ca8a04" stroke-width="3"/><line x1="0" y1="30" x2="90" y2="30" stroke="#ca8a04" stroke-width="3"/></svg>` },
-        { id: 'd4', name: 'Gazebo Santai', svg: `<svg viewBox="0 0 80 70" width="85"><polygon points="40,0 0,25 80,25" fill="#b45309"/><rect x="10" y="25" width="6" height="40" fill="#78350f"/><rect x="64" y="25" width="6" height="40" fill="#78350f"/><rect x="5" y="60" width="70" height="8" fill="#78350f"/></svg>` }
-      ],
-      langit: [
-        { id: 'l1', name: 'Matahari Cerah', svg: `<svg viewBox="0 0 70 70" width="75"><circle cx="35" cy="35" r="20" fill="#facc15"/><g stroke="#facc15" stroke-width="4"><line x1="35" y1="0" x2="35" y2="8"/><line x1="35" y1="62" x2="35" y2="70"/><line x1="0" y1="35" x2="8" y2="35"/><line x1="62" y1="35" x2="70" y2="35"/></g></svg>` },
-        { id: 'l2', name: 'Awan Putih', svg: `<svg viewBox="0 0 90 50" width="95"><path d="M15,40 Q0,40 10,25 Q15,5 40,15 Q60,0 75,20 Q90,25 80,40 Z" fill="#ffffff" opacity="0.9"/></svg>` },
-        { id: 'l3', name: 'Pelangi Indah', svg: `<svg viewBox="0 0 120 60" width="130"><path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="#ef4444" stroke-width="6"/><path d="M16,60 A44,44 0 0,1 104,60" fill="none" stroke="#eab308" stroke-width="6"/><path d="M22,60 A38,38 0 0,1 98,60" fill="none" stroke="#3b82f6" stroke-width="6"/></svg>` },
-        { id: 'l4', name: 'Kawanan Burung', svg: `<svg viewBox="0 0 60 30" width="65"><path d="M0,15 Q10,0 20,15 Q30,0 40,15" fill="none" stroke="#1e293b" stroke-width="3"/><path d="M25,25 Q32,15 40,25 Q48,15 55,25" fill="none" stroke="#1e293b" stroke-width="2"/></svg>` }
-      ]
-    };
-
     /* ================= STATE APLIKASI ================= */
     let userData = { nama: '', kelas: '5' };
     let canvasItems = [];
@@ -474,6 +425,17 @@
     window.addEventListener('resize', updateCanvasScale);
 
     /* ================= ALUR NAVIGASI & SCREEN ================= */
+    function goToHomeScreen() {
+      if (canvasItems.length > 0) {
+        if (!confirm('Apakah kamu yakin ingin kembali ke Halaman Utama / Cover? (Pastikan kamu sudah menyimpan desainmu)')) {
+          return;
+        }
+      }
+      document.getElementById('screen-main-game').classList.add('hidden');
+      document.getElementById('screen-data-diri').classList.add('hidden');
+      document.getElementById('screen-splash').classList.remove('hidden');
+    }
+
     function goToDataScreen() {
       document.getElementById('screen-data-diri').classList.remove('hidden');
     }
@@ -496,26 +458,6 @@
       loadLocalStorage();
 
       setTimeout(updateCanvasScale, 50);
-    }
-
-    function handleStartBuilding(e) {
-      e.preventDefault();
-      const nama = document.getElementById('input-nama').value.trim();
-      if (!nama) return;
-
-      userData.nama = nama;
-      document.getElementById('display-user-name').innerText = nama;
-
-      document.getElementById('screen-splash').classList.add('hidden');
-      document.getElementById('screen-data-diri').classList.add('hidden');
-      document.getElementById('screen-main-game').classList.remove('hidden');
-
-      // Initialize Palette & History
-      renderPalette();
-      saveHistoryState();
-      
-      // Auto load saved progress if exists
-      loadLocalStorage();
     }
 
     function toggleFullScreen() {
@@ -949,7 +891,7 @@
       }
     });
 
-    function downloadFormat(type = 'png', orientation = 'portrait') {
+    function downloadFormat(type = 'png', orientation = 'landscape') {
       // Sembunyikan seleksi elemen sebelum export
       selectedItemId = null;
       renderCanvasItems();
@@ -1078,7 +1020,7 @@
     }
 
     function downloadPNG() {
-      downloadFormat('png', 'portrait');
+      downloadFormat('png', 'landscape');
     }
 
     function printDesign() {
