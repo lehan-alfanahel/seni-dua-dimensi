@@ -394,7 +394,143 @@
 
   <!-- JavaScript Logic -->
   <script>
-    /* ================= STATE APLIKASI ================= */
+    const ASSET_CATALOG = {
+      bangunan: [
+        {
+          id: 'bng_pondasi',
+          name: 'Pondasi Rumah',
+          svg: `<svg viewBox="0 0 100 60" class="w-full h-full"><rect x="5" y="15" width="90" height="30" fill="#78350f" rx="4" stroke="#451a03" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'bng_dinding_bata',
+          name: 'Dinding Bata',
+          svg: `<svg viewBox="0 0 100 80" class="w-full h-full"><rect x="5" y="5" width="90" height="70" fill="#f97316" stroke="#c2410c" stroke-width="2"/><line x1="5" y1="28" x2="95" y2="28" stroke="#ea580c" stroke-width="2"/><line x1="5" y1="52" x2="95" y2="52" stroke="#ea580c" stroke-width="2"/><line x1="50" y1="5" x2="50" y2="28" stroke="#ea580c" stroke-width="2"/><line x1="25" y1="28" x2="25" y2="52" stroke="#ea580c" stroke-width="2"/><line x1="75" y1="28" x2="75" y2="52" stroke="#ea580c" stroke-width="2"/><line x1="50" y1="52" x2="50" y2="75" stroke="#ea580c" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'bng_dinding_modern',
+          name: 'Dinding Modern',
+          svg: `<svg viewBox="0 0 100 80" class="w-full h-full"><rect x="5" y="5" width="90" height="70" fill="#f8fafc" stroke="#64748b" stroke-width="2"/><line x1="20" y1="5" x2="20" y2="75" stroke="#cbd5e1" stroke-width="2"/><line x1="80" y1="5" x2="80" y2="75" stroke="#cbd5e1" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'bng_atap_segitiga',
+          name: 'Atap Segitiga Merah',
+          svg: `<svg viewBox="0 0 100 60" class="w-full h-full"><polygon points="50,5 5,55 95,55" fill="#dc2626" stroke="#991b1b" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'bng_atap_klasik',
+          name: 'Atap Biru Klasik',
+          svg: `<svg viewBox="0 0 100 60" class="w-full h-full"><polygon points="50,5 10,55 90,55" fill="#2563eb" stroke="#1e40af" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'bng_atap_datar',
+          name: 'Atap Datar Modern',
+          svg: `<svg viewBox="0 0 100 40" class="w-full h-full"><rect x="5" y="10" width="90" height="20" fill="#334155" rx="3" stroke="#0f172a" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'bng_cerobong',
+          name: 'Cerobong Asap',
+          svg: `<svg viewBox="0 0 40 70" class="w-full h-full"><rect x="10" y="15" width="20" height="50" fill="#b45309" stroke="#78350f" stroke-width="2"/><rect x="5" y="5" width="30" height="10" fill="#92400e" stroke="#78350f" stroke-width="2"/></svg>`
+        }
+      ],
+      pintu: [
+        {
+          id: 'ptu_kayu',
+          name: 'Pintu Kayu',
+          svg: `<svg viewBox="0 0 60 90" class="w-full h-full"><rect x="10" y="5" width="40" height="80" fill="#854d0e" rx="3" stroke="#3f2305" stroke-width="2"/><rect x="15" y="12" width="13" height="30" fill="#a16207" rx="1"/><rect x="32" y="12" width="13" height="30" fill="#a16207" rx="1"/><rect x="15" y="48" width="13" height="30" fill="#a16207" rx="1"/><rect x="32" y="48" width="13" height="30" fill="#a16207" rx="1"/><circle cx="43" cy="48" r="3" fill="#eab308"/></svg>`
+        },
+        {
+          id: 'ptu_kaca',
+          name: 'Pintu Kaca Modern',
+          svg: `<svg viewBox="0 0 60 90" class="w-full h-full"><rect x="10" y="5" width="40" height="80" fill="#e0f2fe" rx="3" stroke="#0284c7" stroke-width="2"/><line x1="30" y1="5" x2="30" y2="85" stroke="#0284c7" stroke-width="2"/><rect x="15" y="15" width="10" height="55" fill="#bae6fd" opacity="0.6"/><rect x="35" y="15" width="10" height="55" fill="#bae6fd" opacity="0.6"/><circle cx="26" cy="48" r="2.5" fill="#0369a1"/><circle cx="34" cy="48" r="2.5" fill="#0369a1"/></svg>`
+        },
+        {
+          id: 'ptu_balkon',
+          name: 'Balkon Minimalis',
+          svg: `<svg viewBox="0 0 100 50" class="w-full h-full"><rect x="5" y="25" width="90" height="20" fill="none" stroke="#475569" stroke-width="3"/><line x1="15" y1="25" x2="15" y2="45" stroke="#475569" stroke-width="2"/><line x1="30" y1="25" x2="30" y2="45" stroke="#475569" stroke-width="2"/><line x1="45" y1="25" x2="45" y2="45" stroke="#475569" stroke-width="2"/><line x1="60" y1="25" x2="60" y2="45" stroke="#475569" stroke-width="2"/><line x1="75" y1="25" x2="75" y2="45" stroke="#475569" stroke-width="2"/><rect x="2" y="45" width="96" height="5" fill="#64748b"/></svg>`
+        }
+      ],
+      jendela: [
+        {
+          id: 'jnd_minimalis',
+          name: 'Jendela Minimalis',
+          svg: `<svg viewBox="0 0 60 60" class="w-full h-full"><rect x="8" y="8" width="44" height="44" fill="#38bdf8" rx="2" stroke="#0284c7" stroke-width="3"/><line x1="30" y1="8" x2="30" y2="52" stroke="#0284c7" stroke-width="2"/><line x1="8" y1="30" x2="52" y2="30" stroke="#0284c7" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'jnd_lingkaran',
+          name: 'Jendela Lingkaran',
+          svg: `<svg viewBox="0 0 60 60" class="w-full h-full"><circle cx="30" cy="30" r="22" fill="#7dd3fc" stroke="#0369a1" stroke-width="3"/><line x1="30" y1="8" x2="30" y2="52" stroke="#0369a1" stroke-width="2"/><line x1="8" y1="30" x2="52" y2="30" stroke="#0369a1" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'jnd_busur',
+          name: 'Jendela Lengkung',
+          svg: `<svg viewBox="0 0 60 70" class="w-full h-full"><path d="M 10 30 A 20 20 0 0 1 50 30 L 50 60 L 10 60 Z" fill="#38bdf8" stroke="#0284c7" stroke-width="3"/><line x1="30" y1="10" x2="30" y2="60" stroke="#0284c7" stroke-width="2"/><line x1="10" y1="35" x2="50" y2="35" stroke="#0284c7" stroke-width="2"/></svg>`
+        }
+      ],
+      garasi: [
+        {
+          id: 'grs_pintu',
+          name: 'Pintu Garasi Roll',
+          svg: `<svg viewBox="0 0 100 80" class="w-full h-full"><rect x="5" y="5" width="90" height="70" fill="#94a3b8" stroke="#334155" stroke-width="2"/><line x1="5" y1="20" x2="95" y2="20" stroke="#475569" stroke-width="2"/><line x1="5" y1="35" x2="95" y2="35" stroke="#475569" stroke-width="2"/><line x1="5" y1="50" x2="95" y2="50" stroke="#475569" stroke-width="2"/><line x1="5" y1="65" x2="95" y2="65" stroke="#475569" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'grs_mobil_merah',
+          name: 'Mobil Sedan Merah',
+          svg: `<svg viewBox="0 0 110 50" class="w-full h-full"><path d="M 10 35 L 25 20 L 70 20 L 90 35 L 105 35 L 105 42 L 5 42 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2"/><circle cx="28" cy="42" r="8" fill="#1e293b" stroke="#64748b" stroke-width="2"/><circle cx="82" cy="42" r="8" fill="#1e293b" stroke="#64748b" stroke-width="2"/><polygon points="30,22 48,22 48,33 22,33" fill="#38bdf8" opacity="0.8"/><polygon points="52,22 68,22 78,33 52,33" fill="#38bdf8" opacity="0.8"/></svg>`
+        }
+      ],
+      alam: [
+        {
+          id: 'alm_pohon',
+          name: 'Pohon Cemara',
+          svg: `<svg viewBox="0 0 60 90" class="w-full h-full"><rect x="25" y="65" width="10" height="22" fill="#78350f"/><polygon points="30,5 10,35 50,35" fill="#15803d"/><polygon points="30,20 5,50 55,50" fill="#16a34a"/><polygon points="30,35 2,70 58,70" fill="#22c55e"/></svg>`
+        },
+        {
+          id: 'alm_pohon_rindang',
+          name: 'Pohon Rindang',
+          svg: `<svg viewBox="0 0 70 90" class="w-full h-full"><rect x="30" y="55" width="10" height="30" fill="#78350f"/><circle cx="35" cy="35" r="28" fill="#16a34a"/><circle cx="22" cy="30" r="18" fill="#22c55e"/><circle cx="48" cy="30" r="18" fill="#15803d"/></svg>`
+        },
+        {
+          id: 'alm_bunga',
+          name: 'Bunga Taman',
+          svg: `<svg viewBox="0 0 50 60" class="w-full h-full"><path d="M 25 30 L 25 55" stroke="#15803d" stroke-width="3"/><circle cx="25" cy="20" r="8" fill="#facc15"/><circle cx="15" cy="20" r="6" fill="#f43f5e"/><circle cx="35" cy="20" r="6" fill="#f43f5e"/><circle cx="25" cy="10" r="6" fill="#f43f5e"/><circle cx="25" cy="30" r="6" fill="#f43f5e"/></svg>`
+        }
+      ],
+      dekorasi: [
+        {
+          id: 'dkr_pagar_kayu',
+          name: 'Pagar Kayu',
+          svg: `<svg viewBox="0 0 100 50" class="w-full h-full"><line x1="5" y1="20" x2="95" y2="20" stroke="#a16207" stroke-width="3"/><line x1="5" y1="38" x2="95" y2="38" stroke="#a16207" stroke-width="3"/><polygon points="15,5 23,12 23,48 15,48 7,12" fill="#ca8a04" stroke="#854d0e"/><polygon points="40,5 48,12 48,48 40,48 32,12" fill="#ca8a04" stroke="#854d0e"/><polygon points="65,5 73,12 73,48 65,48 57,12" fill="#ca8a04" stroke="#854d0e"/><polygon points="90,5 98,12 98,48 90,48 82,12" fill="#ca8a04" stroke="#854d0e"/></svg>`
+        },
+        {
+          id: 'dkr_lampu',
+          name: 'Lampu Taman',
+          svg: `<svg viewBox="0 0 40 80" class="w-full h-full"><rect x="18" y="25" width="4" height="50" fill="#334155"/><path d="M 10 25 L 30 25 L 25 10 L 15 10 Z" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/><circle cx="20" cy="18" r="6" fill="#fef08a"/></svg>`
+        },
+        {
+          id: 'dkr_air_mancur',
+          name: 'Air Mancur',
+          svg: `<svg viewBox="0 0 80 60" class="w-full h-full"><ellipse cx="40" cy="48" rx="35" ry="10" fill="#0284c7" stroke="#0369a1" stroke-width="2"/><rect x="36" y="25" width="8" height="23" fill="#64748b"/><path d="M 40 25 Q 20 10 15 25" fill="none" stroke="#38bdf8" stroke-width="2"/><path d="M 40 25 Q 60 10 65 25" fill="none" stroke="#38bdf8" stroke-width="2"/></svg>`
+        }
+      ],
+      langit: [
+        {
+          id: 'lgt_matahari',
+          name: 'Matahari Cerah',
+          svg: `<svg viewBox="0 0 70 70" class="w-full h-full"><circle cx="35" cy="35" r="18" fill="#eab308" stroke="#ca8a04" stroke-width="2"/><line x1="35" y1="5" x2="35" y2="12" stroke="#eab308" stroke-width="3" stroke-linecap="round"/><line x1="35" y1="58" x2="35" y2="65" stroke="#eab308" stroke-width="3" stroke-linecap="round"/><line x1="5" y1="35" x2="12" y2="35" stroke="#eab308" stroke-width="3" stroke-linecap="round"/><line x1="58" y1="35" x2="65" y2="35" stroke="#eab308" stroke-width="3" stroke-linecap="round"/><line x1="14" y1="14" x2="19" y2="19" stroke="#eab308" stroke-width="3" stroke-linecap="round"/><line x1="51" y1="51" x2="56" y2="56" stroke="#eab308" stroke-width="3" stroke-linecap="round"/><line x1="14" y1="56" x2="19" y2="51" stroke="#eab308" stroke-width="3" stroke-linecap="round"/><line x1="51" y1="19" x2="56" y2="14" stroke="#eab308" stroke-width="3" stroke-linecap="round"/></svg>`
+        },
+        {
+          id: 'lgt_awan',
+          name: 'Awan Putih',
+          svg: `<svg viewBox="0 0 80 50" class="w-full h-full"><path d="M 20 35 A 15 15 0 0 1 35 20 A 18 18 0 0 1 60 25 A 12 12 0 0 1 70 35 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/></svg>`
+        },
+        {
+          id: 'lgt_burung',
+          name: 'Burung Terbang',
+          svg: `<svg viewBox="0 0 60 40" class="w-full h-full"><path d="M 5 20 Q 20 5 35 20 Q 50 5 65 20" fill="none" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/></svg>`
+        }
+      ]
+    };
+
     let userData = { nama: '', kelas: '5' };
     let canvasItems = [];
     let selectedItemId = null;
