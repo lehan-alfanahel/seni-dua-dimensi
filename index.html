@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bangun Rumah Mewah - Mini Game Edukasi IPAS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .bg-grid-pattern {
+      background-size: 20px 20px;
+      background-image: 
+        linear-gradient(to right, rgba(200, 200, 255, 0.2) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(200, 200, 255, 0.2) 1px, transparent 1px);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 8px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Target seleksi di Canvas */
+    .canvas-item {
+      position: absolute;
+      cursor: move;
+      touch-action: none;
+      transition: outline 0.1s ease;
+    }
+
+    .canvas-item.selected {
+      outline: 2px dashed #3b82f6;
+      outline-offset: 4px;
+    }
+
+    /* Animasi lembut */
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    .btn-pulse {
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+  <!-- ================= SCREEN 1: SPLASH SCREEN (Sesuai Gambar 1) ================= -->
+  <div id="screen-splash" class="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center p-4">
+    <div class="relative w-full max-w-2xl bg-gradient-to-b from-blue-900 to-indigo-950 rounded-2xl p-8 border border-blue-700/50 shadow-2xl text-center overflow-hidden">
+      
+      <!-- Ornamen Latar Dot Pattern -->
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+      <div class="relative z-10 flex flex-col items-center">
+        <!-- Foto Profil Guru / Avatar -->
+        <div class="w-24 h-24 rounded-full border-4 border-amber-400 overflow-hidden mb-4 shadow-lg bg-emerald-600 flex items-center justify-center relative">
+          <img src="lehan.jpg" alt="Pak Lehan" class="w-full h-full object-cover z-10 relative" onerror="this.style.display='none'; document.getElementById('avatar-svg-fallback').classList.remove('hidden');">
+          
+          <!-- Fallback Vektor Pak Lehan (Sesuai Foto Asli) jika file lehan.jpg belum dimuat -->
+          <div id="avatar-svg-fallback" class="w-full h-full hidden flex items-center justify-center">
+            <svg viewBox="0 0 120 120" class="w-full h-full">
+              <!-- Latar Belakang Hijau Dinding -->
+              <circle cx="60" cy="60" r="60" fill="#22c55e"/>
+              
+              <!-- Seragam Biru Muda Dinas -->
+              <path d="M10,120 C10,92 35,80 60,80 C85,80 110,92 110,120 Z" fill="#a5f3fc"/>
+              <path d="M46,80 L60,96 L74,80 Z" fill="#0284c7"/>
+              
+              <!-- Wajah Pak Lehan -->
+              <circle cx="60" cy="52" r="26" fill="#f3d5b5"/>
+              
+              <!-- Rambut Rapi Pendek -->
+              <path d="M34,48 C34,26 86,26 86,48 C86,34 34,34 34,48 Z" fill="#1e293b"/>
+              <ellipse cx="60" cy="35" rx="24" ry="12" fill="#1e293b"/>
+              
+              <!-- Telinga -->
+              <circle cx="33" cy="54" r="5" fill="#f3d5b5"/>
+              <circle cx="87" cy="54" r="5" fill="#f3d5b5"/>
+              
+              <!-- Mata & Senyuman -->
+              <circle cx="50" cy="50" r="2.5" fill="#0f172a"/>
+              <circle cx="70" cy="50" r="2.5" fill="#0f172a"/>
+              <path d="M52,61 Q60,68 68,61" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              
+              <!-- Lencana & Pangkat Seragam Kuning Emas -->
+              <rect x="22" y="90" width="14" height="6" rx="2" fill="#eab308"/>
+              <rect x="84" y="90" width="14" height="6" rx="2" fill="#eab308"/>
+              <circle cx="44" cy="90" r="3" fill="#f59e0b"/>
+            </svg>
+          </div>
+        </div>
+
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide uppercase mb-1">
+          DESAIN KARYA SENI BUDAYA
+        </h1>
+        <h2 class="text-lg font-bold text-amber-400 mb-1">KELAS 5</h2>
+        <p class="text-sm font-semibold text-slate-300 mb-2">SD NEGERI 2 SENDANG AYU</p>
+
+        <span class="inline-block bg-blue-800/80 text-blue-200 text-xs px-4 py-1.5 rounded-full mb-8 border border-blue-600/50">
+          Pertemuan 1 : Unsur Seni Rupa Dua Dimensi.
+        </span>
+
+        <!-- Tombol Mulai (Warna Oranye) -->
+        <button id="btn-start-game" onclick="goToDataScreen()" class="btn-pulse w-full max-w-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-3 px-6 rounded-full shadow-lg flex items-center justify-center gap-2 text-base transition-all transform active:scale-95">
+          <span>MULAI BERMAIN</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <button onclick="toggleFullScreen()" class="mt-4 text-xs text-slate-400 hover:text-white flex items-center gap-1">
+          <i class="fa-solid fa-expand"></i> Layar Penuh
+        </button>
+
+        <!-- Footer Cover -->
+        <div class="mt-6 pt-4 border-t border-blue-800/60 w-full text-center">
+          <p class="text-xs font-bold text-white tracking-widest">CREATED BY : PAK LEHAN</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 2: MODAL DATA DIRI (Sesuai Gambar 2) ================= -->
+  <div id="screen-data-diri" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl border border-slate-200 text-slate-800">
+      <div class="text-center mb-6">
+        <div class="w-12 h-1.5 bg-blue-600 rounded-full mx-auto mb-3"></div>
+        <h3 class="text-xl font-bold text-blue-900 uppercase">ISI DATA DIRI DULU YUK</h3>
+      </div>
+
+      <form onsubmit="handleStartBuilding(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Nama Lengkap</label>
+          <input type="text" id="input-nama" placeholder="Masukkan namamu..." required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Kelas</label>
+          <input type="text" id="input-kelas" value="5" readonly class="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-500 font-semibold text-sm">
+        </div>
+
+        <button type="submit" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-xl shadow-md text-sm transition-all flex items-center justify-center gap-2">
+          <span>LANJUT KE PERMAINAN</span>
+          <i class="fa-solid fa-play text-xs"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 3: LEVEL UTAMA GAME DRAG & DROP ================= -->
+  <div id="screen-main-game" class="flex-1 flex flex-col h-screen w-full bg-slate-100 hidden overflow-hidden">
+    
+    <!-- Top Header & Toolbar -->
+    <header class="bg-slate-900 text-white px-4 py-2.5 flex flex-wrap items-center justify-between border-b border-slate-800 gap-2 shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="bg-blue-600 text-white p-2 rounded-lg font-black text-sm">
+          <i class="fa-solid fa-house"></i>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-slate-100">Level Utama : Bangunan Rumah</h1>
+          <p class="text-xs text-slate-400">Arsitek : <span id="display-user-name" class="text-amber-400 font-semibold">Siswa</span> - Kelas 5</p>
+        </div>
+      </div>
+
+      <!-- Quick Canvas Actions -->
+      <div class="flex items-center gap-1.5 bg-slate-800 p-1 rounded-xl border border-slate-700">
+        <button onclick="undo()" title="Undo" class="p-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1">
+          <i class="fa-solid fa-rotate-left"></i> <span class="hidden md:inline">Undo</span>
+        </button>
+        <button onclick="redo()" title="Redo" class="p-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1">
+          <i class="fa-solid fa-rotate-right"></i> <span class="hidden md:inline">Redo</span>
+        </button>
+        <div class="w-px h-5 bg-slate-700 my-auto"></div>
+        <button onclick="toggleGrid()" title="Aktifkan Grid" class="p-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg text-xs flex items-center gap-1">
+          <i class="fa-solid fa-border-all"></i> <span class="hidden md:inline">Grid</span>
+        </button>
+        <button onclick="clearCanvasPrompt()" title="Hapus Semua" class="p-2 text-rose-400 hover:bg-rose-950/50 rounded-lg text-xs flex items-center gap-1">
+          <i class="fa-solid fa-trash"></i> <span class="hidden md:inline">Reset</span>
+        </button>
+      </div>
+
+      <!-- Primary Action Buttons -->
+      <div class="flex items-center gap-2">
+        <button onclick="saveDesign()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5">
+          <i class="fa-solid fa-floppy-disk text-emerald-400"></i> Simpan
+        </button>
+
+        <!-- Dropdown Options Download PNG / JPG -->
+        <div class="relative inline-block text-left">
+          <button onclick="toggleDownloadMenu(event)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5">
+            <i class="fa-solid fa-download text-blue-400"></i> Unduh Gambar <i class="fa-solid fa-chevron-down text-[10px]"></i>
+          </button>
+          <div id="download-menu" class="hidden absolute right-0 mt-1 w-48 bg-white rounded-xl shadow-xl border border-slate-200 py-1 z-50 text-slate-700">
+            <button onclick="downloadFormat('png', 'portrait')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium">
+              <i class="fa-regular fa-file-image text-blue-600"></i> PNG (Portrait)
+            </button>
+            <button onclick="downloadFormat('jpg', 'portrait')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium">
+              <i class="fa-regular fa-file-image text-amber-600"></i> JPG (Portrait)
+            </button>
+            <button onclick="downloadFormat('png', 'landscape')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 flex items-center gap-2 font-medium border-t border-slate-100">
+              <i class="fa-regular fa-file-image text-emerald-600"></i> PNG (Landscape)
+            </button>
+          </div>
+        </div>
+
+        <button onclick="evaluateDesign()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-check"></i> Selesai & Nilai
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+      <!-- LEFT PANEL: Kategori & Palette Objek Drag -->
+      <aside class="w-72 bg-white border-r border-slate-200 flex flex-col shrink-0 z-20 shadow-lg">
+        <!-- Selector Kategori -->
+        <div class="p-3 border-b border-slate-100 bg-slate-50">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Kategori Objek</label>
+          <select id="category-select" onchange="renderPalette()" class="w-full bg-white border border-slate-300 text-slate-700 rounded-lg px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="bangunan">🏠 Bangunan Utama</option>
+            <option value="pintu">🚪 Pintu & Balkon</option>
+            <option value="jendela">🪟 Jendela</option>
+            <option value="garasi">🚘 Garasi & Kendaraan</option>
+            <option value="alam">🌳 Alam & Taman</option>
+            <option value="dekorasi">⛲ Dekorasi & Pagar</option>
+            <option value="langit">☀️ Langit & Awan</option>
+          </select>
+        </div>
+
+        <!-- List Objek Drag (Grid Scrollable) -->
+        <div id="palette-list" class="flex-1 p-3 grid grid-cols-2 gap-3 overflow-y-auto custom-scrollbar">
+          <!-- Objek akan di-generate via JS -->
+        </div>
+      </aside>
+
+      <!-- CENTER PANEL: Area Kanvas (1200x800 Scaled) -->
+      <main class="flex-1 bg-slate-200 p-4 overflow-auto flex items-center justify-center relative custom-scrollbar">
+        
+        <!-- Canvas Wrapper -->
+        <div id="canvas-container" class="relative w-[1200px] h-[800px] bg-sky-100 rounded-2xl shadow-xl overflow-hidden border-2 border-slate-300 shrink-0 transition-all">
+          
+          <!-- Latar Belakang Alam Default (Rumput & Langit) -->
+          <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-emerald-600 to-green-500 border-t-4 border-emerald-700/30"></div>
+          <div class="absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-sky-300 via-sky-200 to-sky-100"></div>
+
+          <!-- Overlay Grid Tipis (Toggleable) -->
+          <div id="canvas-grid" class="absolute inset-0 bg-grid-pattern opacity-0 pointer-events-none transition-opacity"></div>
+
+          <!-- Canvas Drop Area (Elemen yang di-drag ditaruh di sini) -->
+          <div id="canvas-workspace" class="absolute inset-0" ondragover="allowDrop(event)" ondrop="handleDrop(event)" onclick="deselectAll(event)">
+            <!-- Interactive Dragged Items dynamically created -->
+          </div>
+        </div>
+
+      </main>
+
+      <!-- RIGHT PANEL: Floating / Fixed Inspector Control Toolbar -->
+      <aside class="w-64 bg-white border-l border-slate-200 flex flex-col p-4 shrink-0 z-20 shadow-lg justify-between">
+        <div>
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Pengaturan Objek</h3>
+          
+          <div id="inspector-empty" class="text-center py-8 text-slate-400 text-xs">
+            <i class="fa-solid fa-hand-pointer text-2xl mb-2 text-slate-300"></i>
+            <p>Klik objek di kanvas untuk mengubah posisi, ukuran, atau layer.</p>
+          </div>
+
+          <div id="inspector-controls" class="space-y-4 hidden">
+            <!-- Label Objek Terpilih -->
+            <div class="bg-blue-50 p-2.5 rounded-lg border border-blue-100 flex items-center justify-between">
+              <span id="selected-label" class="text-xs font-bold text-blue-900">Objek</span>
+              <span class="text-[10px] bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full font-semibold">Aktif</span>
+            </div>
+
+            <!-- Rotasi -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Putar (Rotasi)</label>
+              <div class="flex items-center gap-2">
+                <input type="range" id="rotate-slider" min="0" max="360" value="0" oninput="updateSelectedRotation(this.value)" class="w-full">
+                <span id="rotate-value" class="text-xs font-mono w-8 text-right">0°</span>
+              </div>
+            </div>
+
+            <!-- Ukuran / Skala -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Ukuran (Skala)</label>
+              <div class="flex items-center gap-2">
+                <input type="range" id="scale-slider" min="0.3" max="3" step="0.1" value="1" oninput="updateSelectedScale(this.value)" class="w-full">
+                <span id="scale-value" class="text-xs font-mono w-8 text-right">1x</span>
+              </div>
+            </div>
+
+            <!-- Layer Ordering -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Urutan Layer</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="changeSelectedZIndex(1)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2 px-2 rounded-lg border border-slate-300 flex items-center justify-center gap-1">
+                  <i class="fa-solid fa-arrow-up"></i> Ke Depan
+                </button>
+                <button onclick="changeSelectedZIndex(-1)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2 px-2 rounded-lg border border-slate-300 flex items-center justify-center gap-1">
+                  <i class="fa-solid fa-arrow-down"></i> Ke Belakang
+                </button>
+              </div>
+            </div>
+
+            <hr class="border-slate-200 my-2">
+
+            <!-- Duplikat & Hapus -->
+            <div class="space-y-2">
+              <button onclick="duplicateSelected()" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-2 rounded-lg text-xs border border-indigo-200 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-copy"></i> Duplikat Objek
+              </button>
+              <button onclick="deleteSelected()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-2 rounded-lg text-xs border border-rose-200 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-trash"></i> Hapus Objek
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Watermark / Footer -->
+        <div class="text-[11px] text-slate-400 text-center border-t border-slate-100 pt-3">
+          IPAS Kelas 5 SD - Created By Pak LEHAN
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL PENILAIAN & REWARD ================= -->
+  <div id="modal-score" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-lg rounded-2xl p-6 shadow-2xl border border-slate-200 text-slate-800 relative text-center">
+      
+      <!-- Lencana / Badges -->
+      <div id="reward-badge-icon" class="w-20 h-20 bg-amber-100 border-4 border-amber-400 text-amber-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-3 shadow-lg">
+        🏆
+      </div>
+
+      <h3 id="reward-badge-title" class="text-xl font-black text-amber-600 uppercase tracking-wide">
+        Master Desain Rumah
+      </h3>
+      <p class="text-xs text-slate-500 font-semibold mb-4">Hasil Penilaian Komposisi Karya Seni 2D</p>
+
+      <!-- Skor Ring -->
+      <div class="bg-slate-50 rounded-xl p-4 mb-4 border border-slate-200 flex items-center justify-around">
+        <div class="text-center">
+          <span class="text-3xl font-black text-blue-600" id="final-score-val">95</span>
+          <span class="text-xs font-bold text-slate-400 block">Skor Total</span>
+        </div>
+        <div class="h-10 w-px bg-slate-200"></div>
+        <div class="text-left max-w-xs">
+          <div id="score-breakdown" class="text-[11px] text-slate-600 space-y-1">
+            <!-- Breakdowns -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Komentar -->
+      <div class="bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl p-3 text-xs mb-6 text-left">
+        <p class="font-bold mb-1 flex items-center gap-1">
+          <i class="fa-solid fa-comment-dots"></i> Catatan Guru / Evaluator:
+        </p>
+        <p id="eval-feedback-text">Desainmu sangat rapi, seimbang, dan memanfaatkan ruang kanvas dengan baik!</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="closeScoreModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs">
+          Lanjut Berkreasi
+        </button>
+        <button onclick="printDesign()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-md">
+          <i class="fa-solid fa-print"></i> Cetak Hasil
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Logic -->
+  <script>
+    /* ================= DATA KATALOG OBJEK (SVG / Emoji High Quality) ================= */
+    const ASSET_CATALOG = {
+      bangunan: [
+        { id: 'b1', name: 'Pondasi Rumah', svg: `<svg viewBox="0 0 100 30" width="120"><rect width="100" height="30" rx="4" fill="#78350f" stroke="#451a03" stroke-width="2"/></svg>` },
+        { id: 'b2', name: 'Dinding Bata', svg: `<svg viewBox="0 0 120 90" width="130"><rect width="120" height="90" fill="#fdba74" stroke="#c2410c" stroke-width="3"/><line x1="0" y1="30" x2="120" y2="30" stroke="#c2410c" stroke-width="2"/><line x1="0" y1="60" x2="120" y2="60" stroke="#c2410c" stroke-width="2"/></svg>` },
+        { id: 'b3', name: 'Dinding Modern', svg: `<svg viewBox="0 0 120 90" width="130"><rect width="120" height="90" fill="#f8fafc" stroke="#64748b" stroke-width="3"/></svg>` },
+        { id: 'b4', name: 'Atap Segitiga Merah', svg: `<svg viewBox="0 0 140 70" width="150"><polygon points="70,5 5,65 135,65" fill="#dc2626" stroke="#991b1b" stroke-width="3"/></svg>` },
+        { id: 'b5', name: 'Atap Biru Klasik', svg: `<svg viewBox="0 0 140 70" width="150"><polygon points="70,5 5,65 135,65" fill="#2563eb" stroke="#1e40af" stroke-width="3"/></svg>` },
+        { id: 'b6', name: 'Atap Datar Modern', svg: `<svg viewBox="0 0 130 25" width="140"><rect width="130" height="25" rx="3" fill="#334155" stroke="#0f172a" stroke-width="2"/></svg>` },
+        { id: 'b7', name: 'Cerobong Asap', svg: `<svg viewBox="0 0 30 50" width="40"><rect width="30" height="50" fill="#9a3412"/><rect y="0" width="36" x="-3" height="10" fill="#7c2d12"/></svg>` }
+      ],
+      pintu: [
+        { id: 'p1', name: 'Pintu Kayu', svg: `<svg viewBox="0 0 40 70" width="50"><rect width="40" height="70" rx="3" fill="#b45309" stroke="#78350f" stroke-width="2"/><circle cx="8" cy="38" r="3" fill="#f59e0b"/></svg>` },
+        { id: 'p2', name: 'Pintu Kaca Modern', svg: `<svg viewBox="0 0 50 75" width="55"><rect width="50" height="75" rx="2" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/><line x1="25" y1="0" x2="25" y2="75" stroke="#0284c7" stroke-width="2"/></svg>` },
+        { id: 'p3', name: 'Pintu Lengkung', svg: `<svg viewBox="0 0 45 70" width="50"><path d="M0,70 L0,20 Q22.5,-5 45,20 L45,70 Z" fill="#475569" stroke="#1e293b" stroke-width="2"/><circle cx="38" cy="40" r="3" fill="#e2e8f0"/></svg>` }
+      ],
+      jendela: [
+        { id: 'j1', name: 'Jendela Kecil', svg: `<svg viewBox="0 0 35 35" width="40"><rect width="35" height="35" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/><line x1="17.5" y1="0" x2="17.5" y2="35" stroke="#0284c7" stroke-width="2"/><line x1="0" y1="17.5" x2="35" y2="17.5" stroke="#0284c7" stroke-width="2"/></svg>` },
+        { id: 'j2', name: 'Jendela Besar', svg: `<svg viewBox="0 0 60 40" width="65"><rect width="60" height="40" fill="#e0f2fe" stroke="#0369a1" stroke-width="3"/><line x1="30" y1="0" x2="30" y2="40" stroke="#0369a1" stroke-width="2"/><line x1="0" y1="20" x2="60" y2="20" stroke="#0369a1" stroke-width="2"/></svg>` },
+        { id: 'j3', name: 'Jendela Lengkung', svg: `<svg viewBox="0 0 40 50" width="45"><path d="M0,50 L0,20 Q20,0 40,20 L40,50 Z" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/><line x1="20" y1="0" x2="20" y2="50" stroke="#0284c7" stroke-width="2"/></svg>` },
+        { id: 'j4', name: 'Balkon Minimalis', svg: `<svg viewBox="0 0 80 30" width="85"><rect width="80" height="30" fill="none" stroke="#334155" stroke-width="3"/><line x1="15" y1="0" x2="15" y2="30" stroke="#334155" stroke-width="2"/><line x1="30" y1="0" x2="30" y2="30" stroke="#334155" stroke-width="2"/><line x1="45" y1="0" x2="45" y2="30" stroke="#334155" stroke-width="2"/><line x1="60" y1="0" x2="60" y2="30" stroke="#334155" stroke-width="2"/></svg>` }
+      ],
+      garasi: [
+        { id: 'g1', name: 'Garasi 1 Mobil', svg: `<svg viewBox="0 0 90 70" width="100"><rect width="90" height="70" fill="#94a3b8" stroke="#475569" stroke-width="3"/><line x1="0" y1="15" x2="90" y2="15" stroke="#475569" stroke-width="2"/><line x1="0" y1="30" x2="90" y2="30" stroke="#475569" stroke-width="2"/><line x1="0" y1="45" x2="90" y2="45" stroke="#475569" stroke-width="2"/></svg>` },
+        { id: 'g2', name: 'Mobil Sport Merah', svg: `<svg viewBox="0 0 100 45" width="110"><path d="M10,35 L20,15 L70,15 L95,25 L100,35 Z" fill="#ef4444"/><circle cx="25" cy="35" r="8" fill="#1e293b"/><circle cx="75" cy="35" r="8" fill="#1e293b"/></svg>` },
+        { id: 'g3', name: 'Mobil Keluarga Biru', svg: `<svg viewBox="0 0 110 50" width="120"><rect x="5" y="15" width="100" height="25" rx="5" fill="#3b82f6"/><path d="M25,15 L40,5 L75,5 L90,15 Z" fill="#60a5fa"/><circle cx="30" cy="40" r="9" fill="#0f172a"/><circle cx="80" cy="40" r="9" fill="#0f172a"/></svg>` },
+        { id: 'g4', name: 'Sepeda Santai', svg: `<svg viewBox="0 0 60 40" width="60"><circle cx="15" cy="28" r="10" stroke="#334155" stroke-width="3" fill="none"/><circle cx="45" cy="28" r="10" stroke="#334155" stroke-width="3" fill="none"/><polyline points="15,28 30,28 40,12 45,28" stroke="#ef4444" stroke-width="3" fill="none"/></svg>` }
+      ],
+      alam: [
+        { id: 'a1', name: 'Pohon Rindang', svg: `<svg viewBox="0 0 80 110" width="90"><rect x="32" y="60" width="16" height="50" fill="#78350f"/><circle cx="40" cy="45" r="35" fill="#22c55e"/><circle cx="25" cy="35" r="22" fill="#16a34a"/><circle cx="55" cy="35" r="22" fill="#15803d"/></svg>` },
+        { id: 'a2', name: 'Pohon Kelapa', svg: `<svg viewBox="0 0 80 120" width="90"><path d="M35,120 Q45,60 40,10" stroke="#78350f" stroke-width="10" fill="none"/><path d="M40,10 Q10,0 0,20 M40,10 Q70,0 80,20 M40,10 Q20,-10 10,-30 M40,10 Q60,-10 70,-30" stroke="#15803d" stroke-width="6" fill="none"/></svg>` },
+        { id: 'a3', name: 'Semak Hijau', svg: `<svg viewBox="0 0 70 35" width="75"><path d="M5,35 Q0,15 20,10 Q35,0 50,10 Q70,15 65,35 Z" fill="#16a34a"/></svg>` },
+        { id: 'a4', name: 'Taman Bunga', svg: `<svg viewBox="0 0 60 30" width="65"><rect x="0" y="20" width="60" height="10" fill="#15803d"/><circle cx="15" cy="12" r="6" fill="#ec4899"/><circle cx="30" cy="10" r="6" fill="#eab308"/><circle cx="45" cy="12" r="6" fill="#a855f7"/></svg>` },
+        { id: 'a5', name: 'Batu Taman', svg: `<svg viewBox="0 0 50 30" width="55"><path d="M5,28 Q0,10 25,5 Q50,10 45,28 Z" fill="#64748b"/></svg>` }
+      ],
+      dekorasi: [
+        { id: 'd1', name: 'Air Mancur', svg: `<svg viewBox="0 0 70 70" width="75"><ellipse cx="35" cy="55" rx="30" ry="12" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/><rect x="30" y="30" width="10" height="25" fill="#94a3b8"/><path d="M35,30 Q15,10 10,25 M35,30 Q55,10 60,25" stroke="#38bdf8" stroke-width="3" fill="none"/></svg>` },
+        { id: 'd2', name: 'Lampu Taman', svg: `<svg viewBox="0 0 25 70" width="30"><rect x="10" y="20" width="5" height="50" fill="#334155"/><polygon points="12.5,0 0,20 25,20" fill="#fef08a" stroke="#eab308" stroke-width="2"/></svg>` },
+        { id: 'd3', name: 'Pagar Kayu', svg: `<svg viewBox="0 0 90 40" width="95"><rect x="5" y="5" width="12" height="35" fill="#fde047" stroke="#ca8a04"/><rect x="25" y="5" width="12" height="35" fill="#fde047" stroke="#ca8a04"/><rect x="45" y="5" width="12" height="35" fill="#fde047" stroke="#ca8a04"/><rect x="65" y="5" width="12" height="35" fill="#fde047" stroke="#ca8a04"/><line x1="0" y1="15" x2="90" y2="15" stroke="#ca8a04" stroke-width="3"/><line x1="0" y1="30" x2="90" y2="30" stroke="#ca8a04" stroke-width="3"/></svg>` },
+        { id: 'd4', name: 'Gazebo Santai', svg: `<svg viewBox="0 0 80 70" width="85"><polygon points="40,0 0,25 80,25" fill="#b45309"/><rect x="10" y="25" width="6" height="40" fill="#78350f"/><rect x="64" y="25" width="6" height="40" fill="#78350f"/><rect x="5" y="60" width="70" height="8" fill="#78350f"/></svg>` }
+      ],
+      langit: [
+        { id: 'l1', name: 'Matahari Cerah', svg: `<svg viewBox="0 0 70 70" width="75"><circle cx="35" cy="35" r="20" fill="#facc15"/><g stroke="#facc15" stroke-width="4"><line x1="35" y1="0" x2="35" y2="8"/><line x1="35" y1="62" x2="35" y2="70"/><line x1="0" y1="35" x2="8" y2="35"/><line x1="62" y1="35" x2="70" y2="35"/></g></svg>` },
+        { id: 'l2', name: 'Awan Putih', svg: `<svg viewBox="0 0 90 50" width="95"><path d="M15,40 Q0,40 10,25 Q15,5 40,15 Q60,0 75,20 Q90,25 80,40 Z" fill="#ffffff" opacity="0.9"/></svg>` },
+        { id: 'l3', name: 'Pelangi Indah', svg: `<svg viewBox="0 0 120 60" width="130"><path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="#ef4444" stroke-width="6"/><path d="M16,60 A44,44 0 0,1 104,60" fill="none" stroke="#eab308" stroke-width="6"/><path d="M22,60 A38,38 0 0,1 98,60" fill="none" stroke="#3b82f6" stroke-width="6"/></svg>` },
+        { id: 'l4', name: 'Kawanan Burung', svg: `<svg viewBox="0 0 60 30" width="65"><path d="M0,15 Q10,0 20,15 Q30,0 40,15" fill="none" stroke="#1e293b" stroke-width="3"/><path d="M25,25 Q32,15 40,25 Q48,15 55,25" fill="none" stroke="#1e293b" stroke-width="2"/></svg>` }
+      ]
+    };
+
+    /* ================= STATE APLIKASI ================= */
+    let userData = { nama: '', kelas: '5' };
+    let canvasItems = [];
+    let selectedItemId = null;
+    let historyStack = [];
+    let historyStep = -1;
+    let isGridVisible = false;
+
+    /* ================= ALUR NAVIGASI & SCREEN ================= */
+    function goToDataScreen() {
+      document.getElementById('screen-data-diri').classList.remove('hidden');
+    }
+
+    function handleStartBuilding(e) {
+      e.preventDefault();
+      const nama = document.getElementById('input-nama').value.trim();
+      if (!nama) return;
+
+      userData.nama = nama;
+      document.getElementById('display-user-name').innerText = nama;
+
+      document.getElementById('screen-splash').classList.add('hidden');
+      document.getElementById('screen-data-diri').classList.add('hidden');
+      document.getElementById('screen-main-game').classList.remove('hidden');
+
+      // Initialize Palette & History
+      renderPalette();
+      saveHistoryState();
+      
+      // Auto load saved progress if exists
+      loadLocalStorage();
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    /* ================= RENDER PALETTE KATALOG ================= */
+    function renderPalette() {
+      const category = document.getElementById('category-select').value;
+      const paletteContainer = document.getElementById('palette-list');
+      paletteContainer.innerHTML = '';
+
+      const items = ASSET_CATALOG[category] || [];
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-50 border border-slate-200 rounded-xl p-2.5 flex flex-col items-center justify-center cursor-grab hover:border-blue-400 hover:shadow-md transition-all group relative';
+        card.draggable = true;
+        
+        card.onsdragstart = (e) => handlePaletteDragStart(e, item);
+        // Fallback Click to Add for Mobile / Tablet
+        card.onclick = () => addItemToCanvas(item);
+
+        card.innerHTML = `
+          <div class="h-16 w-full flex items-center justify-center group-hover:scale-105 transition-transform">
+            ${item.svg}
+          </div>
+          <span class="text-[11px] font-bold text-slate-600 mt-1 text-center line-clamp-1">${item.name}</span>
+          <span class="text-[9px] text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">Klik / Seret</span>
+        `;
+        paletteContainer.appendChild(card);
+      });
+    }
+
+    function handlePaletteDragStart(e, item) {
+      e.dataTransfer.setData('text/plain', JSON.stringify(item));
+    }
+
+    /* ================= DRAG & DROP KE KANVAS ================= */
+    function allowDrop(e) {
+      e.preventDefault();
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const dataText = e.dataTransfer.getData('text/plain');
+      if (!dataText) return;
+
+      try {
+        const itemData = JSON.parse(dataText);
+        const rect = document.getElementById('canvas-workspace').getBoundingClientRect();
+        
+        // Posisi Drop relative
+        const x = e.clientX - rect.left - 50;
+        const y = e.clientY - rect.top - 40;
+
+        addItemToCanvas(itemData, x, y);
+      } catch (err) {
+        console.error('Error handling drop:', err);
+      }
+    }
+
+    function addItemToCanvas(itemData, posX = 500, posY = 350) {
+      const newItem = {
+        id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        name: itemData.name,
+        category: getCategoryOfItem(itemData.id),
+        svg: itemData.svg,
+        x: Math.max(10, Math.min(posX, 1100)),
+        y: Math.max(10, Math.min(posY, 700)),
+        rotation: 0,
+        scale: 1,
+        zIndex: canvasItems.length + 1
+      };
+
+      canvasItems.push(newItem);
+      renderCanvasItems();
+      selectItem(newItem.id);
+      saveHistoryState();
+    }
+
+    function getCategoryOfItem(itemId) {
+      for (const cat in ASSET_CATALOG) {
+        if (ASSET_CATALOG[cat].some(i => i.id === itemId)) return cat;
+      }
+      return 'bangunan';
+    }
+
+    /* ================= RENDER & MANIPULASI ELEMEN KANVAS ================= */
+    function renderCanvasItems() {
+      const workspace = document.getElementById('canvas-workspace');
+      workspace.innerHTML = '';
+
+      canvasItems.forEach(item => {
+        const el = document.createElement('div');
+        el.id = item.id;
+        el.className = `canvas-item ${item.id === selectedItemId ? 'selected' : ''}`;
+        el.style.left = `${item.x}px`;
+        el.style.top = `${item.y}px`;
+        el.style.zIndex = item.zIndex;
+        el.style.transform = `rotate(${item.rotation}deg) scale(${item.scale})`;
+
+        el.innerHTML = item.svg;
+
+        // Pointer / Drag event di dalam kanvas
+        el.onmousedown = (e) => startMoveCanvasItem(e, item.id);
+        el.ontouchstart = (e) => startMoveCanvasItemTouch(e, item.id);
+        
+        workspace.appendChild(el);
+      });
+
+      updateInspectorUI();
+    }
+
+    /* Moving Canvas Item via Mouse */
+    function startMoveCanvasItem(e, itemId) {
+      e.stopPropagation();
+      selectItem(itemId);
+
+      const item = canvasItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      const startX = e.clientX - item.x;
+      const startY = e.clientY - item.y;
+
+      function onMouseMove(e) {
+        item.x = e.clientX - startX;
+        item.y = e.clientY - startY;
+        const el = document.getElementById(itemId);
+        if (el) {
+          el.style.left = `${item.x}px`;
+          el.style.top = `${item.y}px`;
+        }
+      }
+
+      function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        saveHistoryState();
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
+
+    /* Moving Canvas Item via Touch (Tablet/Mobile) */
+    function startMoveCanvasItemTouch(e, itemId) {
+      e.stopPropagation();
+      selectItem(itemId);
+
+      const touch = e.touches[0];
+      const item = canvasItems.find(i => i.id === itemId);
+      if (!item) return;
+
+      const startX = touch.clientX - item.x;
+      const startY = touch.clientY - item.y;
+
+      function onTouchMove(e) {
+        const t = e.touches[0];
+        item.x = t.clientX - startX;
+        item.y = t.clientY - startY;
+        const el = document.getElementById(itemId);
+        if (el) {
+          el.style.left = `${item.x}px`;
+          el.style.top = `${item.y}px`;
+        }
+      }
+
+      function onTouchEnd() {
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onTouchEnd);
+        saveHistoryState();
+      }
+
+      document.addEventListener('touchmove', onTouchMove);
+      document.addEventListener('touchend', onTouchEnd);
+    }
+
+    /* ================= SELEKSI & INSPEKTOR ================= */
+    function selectItem(itemId) {
+      selectedItemId = itemId;
+      renderCanvasItems();
+    }
+
+    function deselectAll(e) {
+      if (e.target.id === 'canvas-workspace' || e.target.id === 'canvas-container') {
+        selectedItemId = null;
+        renderCanvasItems();
+      }
+    }
+
+    function updateInspectorUI() {
+      const controls = document.getElementById('inspector-controls');
+      const emptyMsg = document.getElementById('inspector-empty');
+
+      if (!selectedItemId) {
+        controls.classList.add('hidden');
+        emptyMsg.classList.remove('hidden');
+        return;
+      }
+
+      const item = canvasItems.find(i => i.id === selectedItemId);
+      if (!item) return;
+
+      controls.classList.remove('hidden');
+      emptyMsg.classList.add('hidden');
+
+      document.getElementById('selected-label').innerText = item.name;
+      document.getElementById('rotate-slider').value = item.rotation;
+      document.getElementById('rotate-value').innerText = `${item.rotation}°`;
+      document.getElementById('scale-slider').value = item.scale;
+      document.getElementById('scale-value').innerText = `${item.scale}x`;
+    }
+
+    function updateSelectedRotation(val) {
+      if (!selectedItemId) return;
+      const item = canvasItems.find(i => i.id === selectedItemId);
+      if (item) {
+        item.rotation = parseInt(val);
+        document.getElementById('rotate-value').innerText = `${val}°`;
+        renderCanvasItems();
+      }
+    }
+
+    function updateSelectedScale(val) {
+      if (!selectedItemId) return;
+      const item = canvasItems.find(i => i.id === selectedItemId);
+      if (item) {
+        item.scale = parseFloat(val);
+        document.getElementById('scale-value').innerText = `${val}x`;
+        renderCanvasItems();
+      }
+    }
+
+    function changeSelectedZIndex(delta) {
+      if (!selectedItemId) return;
+      const item = canvasItems.find(i => i.id === selectedItemId);
+      if (item) {
+        item.zIndex = Math.max(1, item.zIndex + delta);
+        renderCanvasItems();
+        saveHistoryState();
+      }
+    }
+
+    function duplicateSelected() {
+      if (!selectedItemId) return;
+      const item = canvasItems.find(i => i.id === selectedItemId);
+      if (item) {
+        const cloned = {
+          ...item,
+          id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          x: item.x + 20,
+          y: item.y + 20,
+          zIndex: canvasItems.length + 1
+        };
+        canvasItems.push(cloned);
+        renderCanvasItems();
+        selectItem(cloned.id);
+        saveHistoryState();
+      }
+    }
+
+    function deleteSelected() {
+      if (!selectedItemId) return;
+      canvasItems = canvasItems.filter(i => i.id !== selectedItemId);
+      selectedItemId = null;
+      renderCanvasItems();
+      saveHistoryState();
+    }
+
+    /* ================= UNDO / REDO / GRID ================= */
+    function saveHistoryState() {
+      // Potong stack jika undo lalu add baru
+      if (historyStep < historyStack.length - 1) {
+        historyStack = historyStack.slice(0, historyStep + 1);
+      }
+      historyStack.push(JSON.stringify(canvasItems));
+      historyStep++;
+    }
+
+    function undo() {
+      if (historyStep > 0) {
+        historyStep--;
+        canvasItems = JSON.parse(historyStack[historyStep]);
+        selectedItemId = null;
+        renderCanvasItems();
+      }
+    }
+
+    function redo() {
+      if (historyStep < historyStack.length - 1) {
+        historyStep++;
+        canvasItems = JSON.parse(historyStack[historyStep]);
+        selectedItemId = null;
+        renderCanvasItems();
+      }
+    }
+
+    function toggleGrid() {
+      isGridVisible = !isGridVisible;
+      const gridEl = document.getElementById('canvas-grid');
+      gridEl.style.opacity = isGridVisible ? '1' : '0';
+    }
+
+    function clearCanvasPrompt() {
+      if (confirm('Apakah kamu yakin ingin menghapus seluruh desain rumah?')) {
+        canvasItems = [];
+        selectedItemId = null;
+        renderCanvasItems();
+        saveHistoryState();
+      }
+    }
+
+    /* ================= EVALUASI KREATIVITAS & PENILAIAN AI ================= */
+    function evaluateDesign() {
+      if (canvasItems.length === 0) {
+        alert('Kanvas masih kosong! Tambahkan objek bangunan, pintu, jendela, dan dekorasi terlebih dahulu.');
+        return;
+      }
+
+      // Hitung variasi kategori
+      const categoriesUsed = new Set(canvasItems.map(i => i.category));
+      const totalItems = canvasItems.length;
+
+      // Kriteria Skor (0-100)
+      let scoreBuilding = Math.min(30, (canvasItems.filter(i => i.category === 'bangunan').length) * 10);
+      let scoreVariety = Math.min(35, categoriesUsed.size * 7);
+      let scoreCompleteness = Math.min(20, totalItems * 2);
+      let scoreBalance = 15; // Base score komposisi visual
+
+      let totalScore = Math.min(100, scoreBuilding + scoreVariety + scoreCompleteness + scoreBalance);
+
+      // Tentukan Badge Reward
+      let badgeTitle = "Desainer Pemula 🌟";
+      let badgeIcon = "🌟";
+      if (totalScore >= 90) {
+        badgeTitle = "Master Desain Rumah 🏆";
+        badgeIcon = "🏆";
+      } else if (totalScore >= 80) {
+        badgeTitle = "Seniman Kreatif 🎨";
+        badgeIcon = "🎨";
+      } else if (totalScore >= 70) {
+        badgeTitle = "Arsitek Cilik 🏡";
+        badgeIcon = "🏡";
+      }
+
+      // Generate Umpan Balik Edukatif
+      let feedback = [];
+      if (categoriesUsed.has('alam')) feedback.push("Taman dan Pepohonan membuat suasana rumah asri!");
+      if (categoriesUsed.has('langit')) feedback.push("Awan & Matahari melengkapi komposisi pemandangan 2D.");
+      if (categoriesUsed.has('pintu') && categoriesUsed.has('jendela')) feedback.push("Pintu dan jendela tertata presisi pada bangunan.");
+      if (feedback.length === 0) feedback.push("Cobalah menambahkan pohon dan taman agar desain rumahmu makin hidup!");
+
+      // Update Modal Visual
+      document.getElementById('final-score-val').innerText = totalScore;
+      document.getElementById('reward-badge-title').innerText = badgeTitle;
+      document.getElementById('reward-badge-icon').innerText = badgeIcon;
+      document.getElementById('eval-feedback-text').innerText = feedback.join(" ");
+
+      document.getElementById('score-breakdown').innerHTML = `
+        <p>• Kelengkapan Elemen: <span class="font-bold text-slate-800">${scoreBuilding + scoreCompleteness} pts</span></p>
+        <p>• Variasi Objek (${categoriesUsed.size} Kategori): <span class="font-bold text-slate-800">${scoreVariety} pts</span></p>
+        <p>• Keseimbangan Visual: <span class="font-bold text-slate-800">${scoreBalance} pts</span></p>
+      `;
+
+      document.getElementById('modal-score').classList.remove('hidden');
+
+      // Animasi Confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+
+    function closeScoreModal() {
+      document.getElementById('modal-score').classList.add('hidden');
+    }
+
+    /* ================= STORAGE & EKSPOR (PNG / LOCALSTORAGE) ================= */
+    function saveDesign() {
+      const saveData = {
+        user: userData,
+        items: canvasItems,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('ipas_desain_rumah', JSON.stringify(saveData));
+      alert('Karya desain rumahmu berhasil disimpan!');
+    }
+
+    function loadLocalStorage() {
+      const saved = localStorage.getItem('ipas_desain_rumah');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.items && parsed.items.length > 0) {
+            if (confirm('Ditemukan karya desain yang tersimpan sebelumnya. Apakah ingin memuatnya kembali?')) {
+              canvasItems = parsed.items;
+              renderCanvasItems();
+              saveHistoryState();
+            }
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+
+    /* ================= FITUR UNDUH GAMBAR (PNG / JPG & PORTRAIT) ================= */
+    function toggleDownloadMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('download-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', () => {
+      const menu = document.getElementById('download-menu');
+      if (menu && !menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    function downloadFormat(type = 'png', orientation = 'portrait') {
+      // Sembunyikan seleksi elemen sebelum export
+      selectedItemId = null;
+      renderCanvasItems();
+
+      const isPortrait = orientation === 'portrait';
+      const canvas = document.createElement('canvas');
+      
+      // Dimensi Canvas Ekspor
+      if (isPortrait) {
+        canvas.width = 800;
+        canvas.height = 1100;
+      } else {
+        canvas.width = 1200;
+        canvas.height = 800;
+      }
+      
+      const ctx = canvas.getContext('2d');
+
+      // Tentukan offset & skala canvas area
+      let renderX = 0, renderY = 0, renderW = canvas.width, renderH = canvas.height;
+      if (isPortrait) {
+        renderY = 120; // Ruang header atas
+        renderH = 850; // Tinggi area karya
+      }
+
+      // Background dasar (Putih untuk JPG)
+      if (type === 'jpg') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Draw Sky & Grass Canvas
+      const skyHeight = renderH * (2/3);
+      const skyGradient = ctx.createLinearGradient(0, renderY, 0, renderY + skyHeight);
+      skyGradient.addColorStop(0, '#bae6fd');
+      skyGradient.addColorStop(1, '#e0f2fe');
+      ctx.fillStyle = skyGradient;
+      ctx.fillRect(0, renderY, renderW, skyHeight);
+
+      const grassGradient = ctx.createLinearGradient(0, renderY + skyHeight, 0, renderY + renderH);
+      grassGradient.addColorStop(0, '#22c55e');
+      grassGradient.addColorStop(1, '#15803d');
+      ctx.fillStyle = grassGradient;
+      ctx.fillRect(0, renderY + skyHeight, renderW, renderH - skyHeight);
+
+      // Skala penyesuaian dari kanvas utama (1200x800) ke kanvas ekspor
+      const scaleX = renderW / 1200;
+      const scaleY = renderH / 800;
+
+      // Render Ornamen Header & Footer Portrait
+      if (isPortrait) {
+        // Top Header Card
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, 800, 120);
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = 'bold 22px Inter, sans-serif';
+        ctx.fillText('HASIL KARYA DESAIN RUMAH MEWAH', 30, 45);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '500 15px Inter, sans-serif';
+        ctx.fillText(`Arsitek Cilik: ${userData.nama} | Kelas 5 SD Negeri 2 Sendang Ayu`, 30, 78);
+
+        // Bottom Footer Bar
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 970, 800, 130);
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 16px Inter, sans-serif';
+        ctx.fillText('IPAS KELAS 5 - UNTUK KARYA SENI RUPA 2 DIMENSI', 30, 1010);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px Inter, sans-serif';
+        ctx.fillText('CREATED BY : PAK LEHAN', 30, 1045);
+      }
+
+      const sortedItems = [...canvasItems].sort((a, b) => a.zIndex - b.zIndex);
+
+      if (sortedItems.length === 0) {
+        triggerDownload(canvas, type, orientation);
+        return;
+      }
+
+      let loadedCount = 0;
+      sortedItems.forEach(item => {
+        const img = new Image();
+        const svgBlob = new Blob([item.svg], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+
+        img.onload = () => {
+          ctx.save();
+          const targetX = (item.x * scaleX) + renderX + (40 * scaleX);
+          const targetY = (item.y * scaleY) + renderY + (40 * scaleY);
+          
+          ctx.translate(targetX, targetY);
+          ctx.rotate((item.rotation * Math.PI) / 180);
+          ctx.scale(item.scale * scaleX, item.scale * scaleY);
+          ctx.drawImage(img, -40, -40);
+          ctx.restore();
+
+          URL.revokeObjectURL(url);
+          loadedCount++;
+          if (loadedCount === sortedItems.length) {
+            // Watermark tambahan untuk Landscape
+            if (!isPortrait) {
+              ctx.fillStyle = '#1e293b';
+              ctx.font = 'bold 16px Inter, sans-serif';
+              ctx.fillText(`Karya: ${userData.nama} (Kelas ${userData.kelas}) - SD Negeri 2 Sendang Ayu | Created By Pak LEHAN`, 20, 780);
+            }
+            triggerDownload(canvas, type, orientation);
+          }
+        };
+        img.src = url;
+      });
+    }
+
+    function triggerDownload(canvas, type, orientation) {
+      const link = document.createElement('a');
+      const ext = type === 'jpg' ? 'jpg' : 'png';
+      const mime = type === 'jpg' ? 'image/jpeg' : 'image/png';
+      const fileName = `Desain_Rumah_${userData.nama.replace(/\s+/g, '_')}_${orientation}.${ext}`;
+      
+      link.download = fileName;
+      link.href = canvas.toDataURL(mime, 0.92);
+      link.click();
+    }
+
+    function downloadPNG() {
+      downloadFormat('png', 'portrait');
+    }
+
+    function printDesign() {
+      window.print();
+    }
+  </script>
+</body>
+</html>
